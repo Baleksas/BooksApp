@@ -3,7 +3,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import Navbar from "./Navbar";
-
 const Sidebar = ({
   children, // will be a page or nested layout
 }: {
@@ -27,7 +26,7 @@ const Sidebar = ({
         <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
           <li>
             <Link className={` ${pathname === "/" ? "active" : ""}`} href="/">
-              home
+              Home
             </Link>
           </li>
           <li>
@@ -36,6 +35,14 @@ const Sidebar = ({
               href="/dashboard"
             >
               Dashboard
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={` ${pathname === "/reviews" ? "active" : ""}`}
+              href="/reviews"
+            >
+              Reviews
             </Link>
           </li>
         </ul>

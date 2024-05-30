@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Sidebar>{children}</Sidebar>
+        <main>
+          <Sidebar>{children}</Sidebar>
+        </main>
       </body>
     </html>
   );
