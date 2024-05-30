@@ -13,6 +13,12 @@ Inspired by good reads
 - Create a personal reading list
 - Connect with other users and see their reviews
 
+## Technologies used
+
+- Next.js
+- DaisyUI
+- Prisma
+
 ## Installation
 
 To run this application locally, follow these steps:
