@@ -5,17 +5,34 @@ import { BookSearchResponse } from "@/types/BookSearchResponse";
 import SearchInput from "../SearchInput";
 import BookCard from "./BookCard";
 import { Book } from "@/types/Book";
+import Pagination from "../shared/Pagination";
+import Loading from "../shared/Loading";
 
 export default function BookSearch() {
-  const [searchParams, setSearchParams] = useState("harry");
+  const [searchParams, setSearchParams] = useState({
+    title: "",
+    resultsPerPage: 10,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchResults, setSearchResults] =
     useState<BookSearchResponse | null>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async (e: any) => {
-    e.preventDefault();
+  useEffect(() => {
+    fetchData();
+    console.log(currentPage);
+  }, [currentPage]);
+
+  const fetchData = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.preventDefault();
+    setIsLoading(true);
     try {
       const response = await fetch(
-        `/api/library?title=${encodeURIComponent(searchParams)}`,
+        `/api/library?title=${encodeURIComponent(
+          searchParams.title
+        )}&limit=${encodeURIComponent(
+          searchParams.resultsPerPage
+        )}$page=${currentPage}`,
         {
           headers: {
             method: "GET",
@@ -24,28 +41,37 @@ export default function BookSearch() {
         }
       );
       const data = await response.json();
-      console.log(data);
+      setIsLoading(false);
       setSearchResults(data);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
 
-  console.log(searchResults);
   return (
     <div className="w-full">
+      {isLoading && <Loading></Loading>}
       <form>
-        <div className="flex">
+        <div className="flex gap-2 flex-col sm:flex-row sm:items-end ">
           <SearchInput
             searchParams={searchParams}
-            setsearchParams={setSearchParams}
+            setSearchParams={setSearchParams}
           />
-          <button onClick={fetchData} className="btn btn-outline ms-2">
+          <button onClick={fetchData} className="btn btn-outline">
             Search
           </button>
         </div>
       </form>
-      {searchResults && <SearchResults searchResults={searchResults} />}
+      {searchResults && (
+        <>
+          <SearchResults searchResults={searchResults} />
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
+      )}
     </div>
   );
 }
