@@ -1,5 +1,7 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -12,7 +14,9 @@ const Navbar = () => {
         </label>
       </div>
       <div className="navbar-center">
-        <a className="btn btn-ghost text-xl">Read away</a>
+        <Link className="btn btn-ghost text-xl" href="/">
+          Read away
+        </Link>
       </div>
       <div className="navbar-end">
         <div className="dropdown dropdown-end">
@@ -22,7 +26,9 @@ const Navbar = () => {
             className="btn btn-ghost btn-circle avatar"
           >
             <div className="w-10 rounded-full">
-              <img
+              <Image
+                width={40}
+                height={40}
                 alt="Tailwind CSS Navbar component"
                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
               />

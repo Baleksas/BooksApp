@@ -8,14 +8,19 @@ export default async function Page() {
       authorId: "1",
     },
   });
+
   return (
     <div>
-      {reviews.map((review) => (
-        <div key={review.id}>
-          <h2>{review.rating}</h2>
-          <p>{review.content}</p>
-        </div>
-      ))}
+      {reviews.length > 0 ? (
+        reviews.map((review) => (
+          <div key={review.id}>
+            <h2>{review.rating}</h2>
+            <p>{review.content}</p>
+          </div>
+        ))
+      ) : (
+        <p>No reviews yet</p>
+      )}
     </div>
   );
 }

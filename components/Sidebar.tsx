@@ -39,6 +39,14 @@ const Sidebar = ({
           </li>
           <li>
             <Link
+              className={` ${pathname === "/library" ? "active" : ""}`}
+              href="/library"
+            >
+              Library
+            </Link>
+          </li>
+          <li>
+            <Link
               className={` ${pathname === "/reviews" ? "active" : ""}`}
               href="/reviews"
             >

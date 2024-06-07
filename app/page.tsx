@@ -1,6 +1,4 @@
-import Sidebar from "@/components/Sidebar";
-
-export default function Page() {
+export default async function Page() {
   return (
     <div className="hero min-h-full">
       <div className="hero-content text-center">
