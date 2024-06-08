@@ -5,6 +5,7 @@ import { BookSearchResponse } from "@/types/BookSearchResponse";
 import SearchInput from "../SearchInput";
 import Pagination from "../shared/Pagination";
 import Loading from "../shared/Loading";
+import toast from "react-hot-toast/headless";
 
 export default function BookSearch() {
   const [searchParams, setSearchParams] = useState({
@@ -47,7 +48,8 @@ export default function BookSearch() {
 
       if (!response.ok) {
         const error = await response.json();
-        alert(error.error);
+        toast(error.message);
+        setIsLoading(false);
       } else {
         const data = await response.json();
         setIsLoading(false);

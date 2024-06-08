@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   if (!title) {
     return NextResponse.json(
-      { error: "Provided title is empty" },
+      { message: "Provided title is empty" },
       { status: 400 }
     );
   }
