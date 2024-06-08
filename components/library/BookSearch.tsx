@@ -1,10 +1,8 @@
 "use client";
 import SearchResults from "./SearchResults";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BookSearchResponse } from "@/types/BookSearchResponse";
 import SearchInput from "../SearchInput";
-import BookCard from "./BookCard";
-import { Book } from "@/types/Book";
 import Pagination from "../shared/Pagination";
 import Loading from "../shared/Loading";
 
@@ -18,9 +16,15 @@ export default function BookSearch() {
     useState<BookSearchResponse | null>();
   const [isLoading, setIsLoading] = useState(false);
 
+  const initialRender = useRef(true);
+
   useEffect(() => {
-    fetchData();
-    console.log(currentPage);
+    if (initialRender.current) {
+      initialRender.current = false;
+    } else {
+      fetchData();
+      console.log(currentPage);
+    }
   }, [currentPage]);
 
   const fetchData = async (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -32,7 +36,7 @@ export default function BookSearch() {
           searchParams.title
         )}&limit=${encodeURIComponent(
           searchParams.resultsPerPage
-        )}$page=${currentPage}`,
+        )}&page=${currentPage}`,
         {
           headers: {
             method: "GET",
@@ -40,9 +44,15 @@ export default function BookSearch() {
           },
         }
       );
-      const data = await response.json();
-      setIsLoading(false);
-      setSearchResults(data);
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error);
+      } else {
+        const data = await response.json();
+        setIsLoading(false);
+        setSearchResults(data);
+      }
     } catch (error) {
       setIsLoading(false);
       console.log(error);
@@ -51,7 +61,6 @@ export default function BookSearch() {
 
   return (
     <div className="w-full">
-      {isLoading && <Loading></Loading>}
       <form>
         <div className="flex gap-2 flex-col sm:flex-row sm:items-end ">
           <SearchInput
@@ -63,7 +72,9 @@ export default function BookSearch() {
           </button>
         </div>
       </form>
-      {searchResults && (
+      {isLoading && <Loading></Loading>}
+
+      {searchResults && !isLoading && (
         <>
           <SearchResults searchResults={searchResults} />
           <Pagination
