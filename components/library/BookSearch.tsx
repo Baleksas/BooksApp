@@ -16,28 +16,35 @@ export default function BookSearch() {
   const [searchResults, setSearchResults] =
     useState<BookSearchResponse | null>();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [currentTitle, setCurrentTitle] = useState("");
   const initialRender = useRef(true);
 
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
     } else {
-      fetchData();
-      console.log(currentPage);
+      fetchData(undefined, true);
     }
   }, [currentPage]);
 
-  const fetchData = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+  const fetchData = async (
+    e?: React.MouseEvent<HTMLButtonElement>,
+    pageChange = false
+  ) => {
     e?.preventDefault();
     setIsLoading(true);
+    setCurrentTitle(searchParams.title);
+
+    if (!pageChange) {
+      setCurrentPage(1);
+    }
     try {
       const response = await fetch(
         `/api/library?title=${encodeURIComponent(
-          searchParams.title
-        )}&limit=${encodeURIComponent(
-          searchParams.resultsPerPage
-        )}&page=${currentPage}`,
+          pageChange ? currentTitle : searchParams.title
+        )}&limit=${encodeURIComponent(searchParams.resultsPerPage)}&page=${
+          pageChange ? currentPage : 1
+        }`,
         {
           headers: {
             method: "GET",

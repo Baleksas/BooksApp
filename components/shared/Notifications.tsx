@@ -16,7 +16,7 @@ const Notifications = () => {
             {...toast.ariaProps}
             role="alert"
             style={{ maxWidth: "calc(100% - 20px)" }}
-            className="alert alert-error absolute z-10 m-2 w-full sm:w-64 bottom-0 right-0"
+            className="alert alert-error fixed z-10 m-2 w-full sm:w-64 bottom-0 right-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
