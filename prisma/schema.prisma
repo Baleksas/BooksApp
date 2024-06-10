@@ -11,9 +11,17 @@ datasource db {
 
 model Review {
   id        String     @default(cuid()) @id
-  bookId    String
+  bookId    Int
   content   String
-  rating    String
+  rating    Int
+  author    User?   @relation(fields: [authorId], references: [id])
+  authorId  String?
+}
+
+model Collection {
+  id        String     @default(cuid()) @id
+  bookIds   String[]
+  title     String
   author    User?   @relation(fields: [authorId], references: [id])
   authorId  String?
 }
@@ -25,5 +33,6 @@ model User {
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   reviews       Review[]
+  collections   Collection[]
   @@map(name: "users")
 }
