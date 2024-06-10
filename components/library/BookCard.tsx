@@ -11,7 +11,7 @@ export default function BookCard({ book }: BookCardProps) {
       <figure>
         <Image
           width={200}
-          height={400}
+          height={200}
           alt={book.title}
           src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
         ></Image>{" "}

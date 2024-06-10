@@ -5,7 +5,7 @@ export default async function Page() {
   const reviews = await prisma.review.findMany({
     where: {
       // TODO: Only show reviews for the currently logged in user
-      authorId: "1",
+      authorId: "clx95f1120001mfyk227rrbgp",
     },
   });
 

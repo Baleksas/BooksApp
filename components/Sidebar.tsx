@@ -31,10 +31,10 @@ const Sidebar = ({
           </li>
           <li>
             <Link
-              className={` ${pathname === "/dashboard" ? "active" : ""}`}
-              href="/dashboard"
+              className={` ${pathname === "/collections" ? "active" : ""}`}
+              href="/collections"
             >
-              Dashboard
+              Reading lists
             </Link>
           </li>
           <li>
