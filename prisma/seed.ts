@@ -26,11 +26,11 @@ async function main() {
         create: [
           {
             title: "Primary collection",
-            bookIds: ["170507", "9406"],
+            bookKeys: ["/works/OL33394933W"],
           },
           {
             title: "Secondary Collection",
-            bookIds: ["3239376", "49811"],
+            bookKeys: [],
           },
         ],
       },

@@ -8,7 +8,7 @@ interface DataState {
   error: null;
   data: {
     id: string;
-    bookIds: string[];
+    bookKeys: string[];
     title: string;
     authorId: string | null;
   };

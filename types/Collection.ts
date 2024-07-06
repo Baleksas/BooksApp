@@ -1,6 +1,6 @@
 export interface Collection {
   id: string;
   title: string;
-  bookIds: string[];
+  bookKeys: string[];
   authorId: string | null;
 }

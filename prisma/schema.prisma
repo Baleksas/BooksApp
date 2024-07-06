@@ -11,7 +11,7 @@ datasource db {
 
 model Review {
   id        String     @default(cuid()) @id
-  bookId    Int
+  bookKey    Int
   content   String
   rating    Int
   author    User?   @relation(fields: [authorId], references: [id])
@@ -20,7 +20,7 @@ model Review {
 
 model Collection {
   id        String     @default(cuid()) @id
-  bookIds   String[]
+  bookKeys  String[]
   title     String
   author    User?   @relation(fields: [authorId], references: [id])
   authorId  String?

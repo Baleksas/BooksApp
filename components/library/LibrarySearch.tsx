@@ -12,7 +12,7 @@ export default function BookSearch() {
     title: "",
     resultsPerPage: 10,
   });
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentStartIndex, setCurrentStartIndex] = useState(0);
   const [searchResults, setSearchResults] =
     useState<BookSearchResponse | null>();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,7 @@ export default function BookSearch() {
     } else {
       fetchData(undefined, true);
     }
-  }, [currentPage]);
+  }, [currentStartIndex]);
 
   const fetchData = async (
     e?: React.MouseEvent<HTMLButtonElement>,
@@ -36,14 +36,14 @@ export default function BookSearch() {
     setCurrentTitle(searchParams.title);
 
     if (!pageChange) {
-      setCurrentPage(1);
+      setCurrentStartIndex(0);
     }
     try {
       const response = await fetch(
         `/api/library?title=${encodeURIComponent(
           pageChange ? currentTitle : searchParams.title
         )}&limit=${encodeURIComponent(searchParams.resultsPerPage)}&page=${
-          pageChange ? currentPage : 1
+          pageChange ? currentStartIndex : 0
         }`,
         {
           headers: {
@@ -59,6 +59,7 @@ export default function BookSearch() {
         setIsLoading(false);
       } else {
         const data = await response.json();
+        console.log(data);
         setIsLoading(false);
         setSearchResults(data);
       }
@@ -69,7 +70,7 @@ export default function BookSearch() {
   };
 
   return (
-    <div className="w-full">
+    <>
       <form>
         <div className="flex gap-2 flex-col sm:flex-row sm:items-end ">
           <SearchInput
@@ -82,16 +83,16 @@ export default function BookSearch() {
         </div>
       </form>
       {isLoading && <Loading></Loading>}
-
       {searchResults && !isLoading && (
         <>
           <SearchResults searchResults={searchResults} />
           <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
+            currentPage={currentStartIndex}
+            resultsPerPage={searchParams.resultsPerPage}
+            setCurrentPage={setCurrentStartIndex}
           />
         </>
       )}
-    </div>
+    </>
   );
 }

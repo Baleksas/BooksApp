@@ -59,14 +59,12 @@ export default function SearchInput({
               resultsPerPage: Number(e.target.value),
             }))
           }
+          defaultValue={10}
           className="select select-bordered select-sm"
         >
-          <option value={10} selected>
-            10
-          </option>
+          <option value={10}>10</option>
           <option value={15}>15</option>
           <option value={20}>20</option>
-          <option value={50}>50</option>
         </select>
       </label>
     </>

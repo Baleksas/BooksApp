@@ -16,9 +16,15 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "covers.openlibrary.org",
+        hostname: "books.google.com",
         port: "",
-        pathname: "/*/*/**",
+        pathname: "/books/**",
+      },
+      {
+        protocol: "http",
+        hostname: "books.google.com",
+        port: "",
+        pathname: "/books/**",
       },
     ],
   },
