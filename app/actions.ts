@@ -49,6 +49,26 @@ export const addBookToCollection = async (
   key: string,
   collectionId: string
 ) => {
+  if (!collectionId) {
+    return {
+      error: "Collection id not provided",
+    };
+  }
+  const bookInCollectionExists = await prisma.collection.findFirst({
+    where: {
+      id: collectionId,
+      bookKeys: {
+        hasSome: [key],
+      },
+    },
+  });
+
+  if (bookInCollectionExists) {
+    return {
+      error: "This book is already in the collection",
+    };
+  }
+
   await prisma.collection.update({
     where: {
       id: collectionId,
@@ -59,6 +79,55 @@ export const addBookToCollection = async (
       },
     },
   });
+
+  revalidatePath("/collections");
+};
+
+export const removeBookFromCollection = async (
+  key: string,
+  collectionId: string
+) => {
+  const collection = await prisma.collection.findUnique({
+    where: {
+      id: collectionId,
+    },
+  });
+
+  if (!collection) {
+    throw new Error("Collection not found");
+  }
+
+  const newBookKeys = collection.bookKeys.filter((bookKey) => bookKey !== key);
+
+  const bookInCollectionExists = await prisma.collection.findFirst({
+    where: {
+      id: collectionId,
+      bookKeys: {
+        hasSome: [key],
+      },
+    },
+  });
+
+  if (!bookInCollectionExists) {
+    throw new Error("This book is not in the collection");
+  }
+
+  const updatedCollection = await prisma.collection.update({
+    where: {
+      id: collectionId,
+    },
+    data: {
+      bookKeys: newBookKeys,
+    },
+  });
+
+  if (!updatedCollection) {
+    throw new Error("Failed to update collection");
+  }
+
+  revalidatePath("/collections");
+
+  return updatedCollection;
 };
 
 export const getBookByKey = async (key: string) => {

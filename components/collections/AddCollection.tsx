@@ -10,7 +10,7 @@ export const AddCollection = () => {
     resetKey: null,
   });
 
-  if (state.error) toast(state.error);
+  if (state.error) toast.error(state.error);
   return (
     <form action={action} key={state?.resetKey}>
       <div className="flex gap-3">

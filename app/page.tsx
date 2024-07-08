@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default async function Page() {
   return (
     <div className="hero min-h-full">
@@ -14,7 +16,10 @@ export default async function Page() {
             seamless user experience tailored to passionate readers who want to
             stay organized and connected in the world of literature.{" "}
           </p>
-          <button className="btn btn-primary mt-2">Get Started</button>
+          <Link className="btn btn-primary mt-2" href="/library">
+            Find books
+          </Link>
+          <button></button>
         </div>
       </div>
     </div>

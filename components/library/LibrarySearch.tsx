@@ -55,7 +55,7 @@ export default function BookSearch() {
 
       if (!response.ok) {
         const error = await response.json();
-        toast(error.message);
+        toast.error(error.message);
         setIsLoading(false);
       } else {
         const data = await response.json();
