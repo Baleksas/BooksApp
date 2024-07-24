@@ -1,35 +1,35 @@
 type SearchInputProps = {
-  searchParams: { title: string; resultsPerPage: number };
-  setSearchParams: React.Dispatch<
+  searchOptions: { title: string; resultsPerPage: number };
+  setSearchOptions: React.Dispatch<
     React.SetStateAction<{ title: string; resultsPerPage: number }>
   >;
 };
 
 export default function SearchInput({
-  searchParams,
-  setSearchParams,
+  searchOptions,
+  setSearchOptions,
 }: SearchInputProps) {
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchParams((prevState) => ({
+    setSearchOptions((prevState) => ({
       ...prevState,
       title: event.target.value,
     }));
   };
 
-  const handleResultsPerPageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchParams((prevState) => ({
-      ...prevState,
-      resultsPerPage: Number(event.target.value),
-    }));
-  };
+  // const handleResultsPerPageChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setSearchOptions((prevState) => ({
+  //     ...prevState,
+  //     resultsPerPage: Number(event.target.value),
+  //   }));
+  // };
   return (
     <>
       <label className="input input-bordered flex items-center gap-2">
         <input
           name="title"
-          value={searchParams.title}
+          value={searchOptions.title}
           onChange={handleTitleChange}
           type="text"
           className="grow"
@@ -54,7 +54,7 @@ export default function SearchInput({
         </div>
         <select
           onChange={(e) =>
-            setSearchParams((prevState) => ({
+            setSearchOptions((prevState) => ({
               ...prevState,
               resultsPerPage: Number(e.target.value),
             }))

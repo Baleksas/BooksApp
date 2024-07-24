@@ -8,7 +8,7 @@ import Loading from "../shared/Loading";
 import toast from "react-hot-toast/headless";
 
 export default function BookSearch() {
-  const [searchParams, setSearchParams] = useState({
+  const [searchOptions, setSearchOptions] = useState({
     title: "",
     resultsPerPage: 10,
   });
@@ -16,35 +16,27 @@ export default function BookSearch() {
   const [searchResults, setSearchResults] =
     useState<BookSearchResponse | null>();
   const [isLoading, setIsLoading] = useState(false);
-  const [currentTitle, setCurrentTitle] = useState("");
   const initialRender = useRef(true);
 
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
     } else {
-      fetchData(undefined, true);
+      fetchData();
     }
   }, [currentStartIndex]);
 
-  const fetchData = async (
-    e?: React.MouseEvent<HTMLButtonElement>,
-    pageChange = false
-  ) => {
+  const fetchData = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
     setIsLoading(true);
-    setCurrentTitle(searchParams.title);
 
-    if (!pageChange) {
-      setCurrentStartIndex(0);
-    }
     try {
       const response = await fetch(
         `/api/library?title=${encodeURIComponent(
-          pageChange ? currentTitle : searchParams.title
-        )}&limit=${encodeURIComponent(searchParams.resultsPerPage)}&page=${
-          pageChange ? currentStartIndex : 0
-        }`,
+          searchOptions.title
+        )}&limit=${encodeURIComponent(
+          searchOptions.resultsPerPage
+        )}&page=${currentStartIndex}`,
         {
           headers: {
             method: "GET",
@@ -74,8 +66,8 @@ export default function BookSearch() {
       <form>
         <div className="flex gap-2 flex-col sm:flex-row sm:items-end ">
           <SearchInput
-            searchParams={searchParams}
-            setSearchParams={setSearchParams}
+            searchOptions={searchOptions}
+            setSearchOptions={setSearchOptions}
           />
           <button onClick={fetchData} className="btn btn-outline">
             Search
@@ -88,7 +80,7 @@ export default function BookSearch() {
           <SearchResults searchResults={searchResults} />
           <Pagination
             currentPage={currentStartIndex}
-            resultsPerPage={searchParams.resultsPerPage}
+            resultsPerPage={searchOptions.resultsPerPage}
             setCurrentPage={setCurrentStartIndex}
           />
         </>

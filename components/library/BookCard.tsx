@@ -1,20 +1,20 @@
 import { addBookToCollection } from "@/app/actions";
-import { Book } from "@/types/Book";
+import { BookAPI } from "@/types/Book";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast/headless";
 import Loading from "../shared/Loading";
 
 interface BookCardProps {
-  book: Book;
+  book: BookAPI;
 }
 
 export default function BookCard({ book }: BookCardProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const addBook = async (bookId: string, collectionId: string) => {
+  const addBook = async (book: BookAPI, collectionId: string) => {
     setIsLoading(true);
-    const response = await addBookToCollection(bookId, collectionId);
+    const response = await addBookToCollection(book, collectionId);
 
     if (response?.error) {
       toast.error(response.error);
@@ -46,7 +46,7 @@ export default function BookCard({ book }: BookCardProps) {
         <div className="card-actions justify-end">
           <button className="btn btn-outline text-pink-400">Review</button>
           <button
-            onClick={() => addBook(book.id, "read")}
+            onClick={() => addBook(book, "dawdaw2")}
             className="btn btn-outline text-green-600"
           >
             Mark as read

@@ -1,7 +1,8 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import prisma from "@/lib/prisma";
 import State from "@/types/FormState";
+import { BookAPI } from "@/types/Book";
 
 export const addCollection = async (prevState: State, formData: FormData) => {
   const title = formData.get("title");
@@ -32,7 +33,6 @@ export const addCollection = async (prevState: State, formData: FormData) => {
   const collection = await prisma.collection.create({
     data: {
       title: formData.get("title") as string,
-      //TODO: Add authorId, author
     },
   });
 
@@ -46,7 +46,7 @@ export const addCollection = async (prevState: State, formData: FormData) => {
 };
 
 export const addBookToCollection = async (
-  key: string,
+  book: BookAPI,
   collectionId: string
 ) => {
   if (!collectionId) {
@@ -54,31 +54,71 @@ export const addBookToCollection = async (
       error: "Collection id not provided",
     };
   }
+
+  const bookData = {
+    id: book.id,
+    etag: book.etag,
+    title: book.volumeInfo.title,
+    authorName: book.volumeInfo.authors?.[0],
+    imageLink: book.volumeInfo.imageLinks?.thumbnail,
+  };
+
   const bookInCollectionExists = await prisma.collection.findFirst({
     where: {
       id: collectionId,
-      bookKeys: {
-        hasSome: [key],
+      books: {
+        some: {
+          id: book.id,
+        },
       },
     },
   });
 
   if (bookInCollectionExists) {
+    console.log("bookInCollectionExists", bookInCollectionExists);
     return {
       error: "This book is already in the collection",
     };
   }
+  console.log("bookData", bookData);
+  console.log("collectionid", collectionId);
 
-  await prisma.collection.update({
-    where: {
-      id: collectionId,
-    },
-    data: {
-      bookKeys: {
-        push: key,
+  // Ensure the book exists in the Book table
+  try {
+    await prisma.book.upsert({
+      where: { id: bookData.id },
+      update: bookData,
+      create: bookData,
+    });
+  } catch (error) {
+    console.log("error when adding book to books", error);
+
+    return {
+      error: error,
+    };
+  }
+
+  // add to collection
+  try {
+    await prisma.collection.update({
+      where: {
+        id: collectionId,
       },
-    },
-  });
+      data: {
+        books: {
+          connect: {
+            id: bookData.id,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    // console.log(typeof error);
+    console.log("error when adding to collection", error);
+    return {
+      error: error,
+    };
+  }
 
   revalidatePath("/collections");
 };
@@ -126,14 +166,41 @@ export const removeBookFromCollection = async (
   }
 
   revalidatePath("/collections");
+  revalidateTag("collections");
 
   return updatedCollection;
 };
 
+export const getBooksInCollection = async (collectionId: string) => {
+  console.log("collectionid", collectionId);
+  const collection = await prisma.collection.findUnique({
+    where: {
+      id: collectionId,
+    },
+    include: {
+      books: true,
+    },
+  });
+
+  if (!collection) {
+    return {
+      error: "Collection not found",
+    };
+  }
+  console.log("collection in db: ", collection);
+  return collection.books;
+};
+
 export const getBookByKey = async (key: string) => {
-  const response =
-    await fetch(`https://www.googleapis.com/books/v1/volumes/${key}
-  `);
+  const response = await fetch(
+    `https://www.googleapis.com/books/v1/volumes/${key}
+  `,
+    {
+      next: {
+        tags: ["book"],
+      },
+    }
+  );
 
   return await response.json();
 };

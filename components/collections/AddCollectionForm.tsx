@@ -4,7 +4,7 @@ import State from "@/types/FormState";
 import { useFormState } from "react-dom";
 import toast from "react-hot-toast/headless";
 
-export const AddCollection = () => {
+export const AddCollectionForm = () => {
   const [state, action] = useFormState<State, FormData>(addCollection, {
     error: null,
     resetKey: null,

@@ -1,14 +1,14 @@
 "use client";
 import { BookSearchResponse } from "@/types/BookSearchResponse";
 import BookCard from "./BookCard";
-import { Book } from "@/types/Book";
+import { BookAPI } from "@/types/Book";
 
 export default function SearchResults({
   searchResults,
 }: {
   searchResults: BookSearchResponse;
 }) {
-  console.log(searchResults);
+  console.log("searchResults", searchResults);
   return (
     <>
       {searchResults ? (
@@ -20,7 +20,7 @@ export default function SearchResults({
       ) : null}
       <div className="mt-3 ">
         {searchResults ? (
-          searchResults.items.map((book: Book) => (
+          searchResults.items.map((book: BookAPI) => (
             <BookCard key={book.id} book={book}></BookCard>
           ))
         ) : (

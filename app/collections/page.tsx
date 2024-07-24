@@ -1,17 +1,16 @@
-import CollectionForm from "@/components/collections/CollectionForm";
+import CollectionSearch from "@/components/collections/CollectionSearch";
 import prisma from "@/lib/prisma";
 
-async function getData() {
-  const collections = await prisma.collection.findMany();
-  return collections;
-}
-
 const Page = async () => {
-  const collections = await getData();
-
+  const collectionsDictionary = await prisma.collection.findMany({
+    select: {
+      id: true,
+      title: true,
+    },
+  });
   return (
     <div className="w-full">
-      <CollectionForm collections={collections} />
+      <CollectionSearch collectionsDictionary={collectionsDictionary} />
     </div>
   );
 };

@@ -5,7 +5,7 @@ export default async function Page() {
   const reviews = await prisma.review.findMany({
     where: {
       // TODO: Only show reviews for the currently logged in user
-      authorId: "clx95f1120001mfyk227rrbgp",
+      creatorId: "clx95f1120001mfyk227rrbgp",
     },
   });
 
@@ -15,7 +15,7 @@ export default async function Page() {
         reviews.map((review) => (
           <div key={review.id}>
             <h2>{review.rating}</h2>
-            <p>{review.content}</p>
+            <p>{review.comment}</p>
           </div>
         ))
       ) : (
