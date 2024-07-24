@@ -1,38 +1,45 @@
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Review {
-  id        String     @default(cuid()) @id
-  bookKey    Int
-  content   String
-  rating    Int
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  reviews     Review[]
+  collections Collection[]
+}
+
+model Book {
+  //id will come from the api - no default
+  id          String       @id
+  etag        String
+  title       String
+  authorName  String
+  imageLink   String
+  collections Collection[]
+  reviews     Review[]
 }
 
 model Collection {
-  id        String     @default(cuid()) @id
-  bookKeys  String[]
+  id        String @id @default(uuid())
   title     String
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
+  books     Book[]
+  creator   User   @relation(fields: [creatorId], references: [id])
+  creatorId String
 }
 
-model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  reviews       Review[]
-  collections   Collection[]
-  @@map(name: "users")
+model Review {
+  id        String @id @default(uuid())
+  comment   String
+  rating    Int
+  book      Book   @relation(fields: [bookId], references: [id])
+  bookId    String
+  creator   User   @relation(fields: [creatorId], references: [id])
+  creatorId String
 }
