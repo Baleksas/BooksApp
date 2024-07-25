@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Book" ALTER COLUMN "imageLink" DROP NOT NULL,
+ALTER COLUMN "authorName" DROP NOT NULL;

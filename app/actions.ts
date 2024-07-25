@@ -49,9 +49,9 @@ export const addBookToCollection = async (
   book: BookAPI,
   collectionId: string
 ) => {
-  if (!collectionId) {
+  if (!collectionId || !book) {
     return {
-      error: "Collection id not provided",
+      error: "Collection ID and book are required",
     };
   }
 
@@ -59,8 +59,11 @@ export const addBookToCollection = async (
     id: book.id,
     etag: book.etag,
     title: book.volumeInfo.title,
-    authorName: book.volumeInfo.authors?.[0],
-    imageLink: book.volumeInfo.imageLinks?.thumbnail,
+    authorName: book.volumeInfo.authors?.[0] || "",
+    imageLink:
+      book.volumeInfo.imageLinks?.thumbnail ||
+      book.volumeInfo.imageLinks?.smallThumbnail ||
+      "",
   };
 
   const bookInCollectionExists = await prisma.collection.findFirst({
@@ -75,15 +78,14 @@ export const addBookToCollection = async (
   });
 
   if (bookInCollectionExists) {
-    console.log("bookInCollectionExists", bookInCollectionExists);
     return {
       error: "This book is already in the collection",
     };
   }
-  console.log("bookData", bookData);
-  console.log("collectionid", collectionId);
 
-  // Ensure the book exists in the Book table
+  // Book has to be added to the books table first so it could be referenced by the collection
+  // Reason: storing etag of the book and fetching every book individually isn't performant and is
+  // risk of relying on the external API to save the books data in the collections
   try {
     await prisma.book.upsert({
       where: { id: bookData.id },
@@ -91,14 +93,11 @@ export const addBookToCollection = async (
       create: bookData,
     });
   } catch (error) {
-    console.log("error when adding book to books", error);
-
     return {
-      error: error,
+      error: "Book could not be added to the books table",
     };
   }
 
-  // add to collection
   try {
     await prisma.collection.update({
       where: {
@@ -113,14 +112,18 @@ export const addBookToCollection = async (
       },
     });
   } catch (error) {
-    // console.log(typeof error);
-    console.log("error when adding to collection", error);
+    // return book from the books table if the book couldn't be added to the collection
+
+    await prisma.book.delete({
+      where: {
+        id: bookData.id,
+      },
+    });
+
     return {
-      error: error,
+      error: "Book couldn't be added to the collection",
     };
   }
-
-  revalidatePath("/collections");
 };
 
 export const removeBookFromCollection = async (

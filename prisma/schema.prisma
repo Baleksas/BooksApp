@@ -20,8 +20,8 @@ model Book {
   id          String       @id
   etag        String
   title       String
-  authorName  String
-  imageLink   String
+  authorName  String?
+  imageLink   String?
   collections Collection[]
   reviews     Review[]
 }
