@@ -1,18 +1,17 @@
 import { Collection } from "@/types/Collection";
 import CollectionBook from "./CollectionBook";
 import { BookDB } from "@/types/Book";
-import { getBooksInCollection } from "@/app/actions";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 
 interface CollectionProps {
   selectedCollection: Collection;
   collectionBooks: BookDB[];
+  setCollectionBooks: (books: BookDB[]) => void;
 }
 
 export const CollectionContent = ({
   selectedCollection,
   collectionBooks,
+  setCollectionBooks,
 }: CollectionProps) => {
   console.log("selected collection in collection content", selectedCollection);
   return (
@@ -24,6 +23,7 @@ export const CollectionContent = ({
               <CollectionBook
                 bookData={book}
                 selectedCollectionId={selectedCollection.id}
+                setCollectionBooks={setCollectionBooks}
               />
             </div>
           ))

@@ -43,8 +43,8 @@ const CollectionSearch = ({ collectionsDictionary }: CollectionsProps) => {
 
       toast.promise(response, {
         loading: "Loading",
-        success: "Book removed from collection",
-        error: "Error removing book",
+        success: "Books are loaded",
+        error: "Error loading books",
       });
       const books = await response;
       // error handling needed
@@ -78,6 +78,7 @@ const CollectionSearch = ({ collectionsDictionary }: CollectionsProps) => {
         <CollectionContent
           collectionBooks={collectionBooks}
           selectedCollection={selectedCollection}
+          setCollectionBooks={setCollectionBooks}
         />
       )}
     </>

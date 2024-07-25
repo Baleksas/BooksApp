@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast/headless";
 import Loading from "../shared/Loading";
-import { removeBookFromCollection } from "@/app/actions";
+import { getBooksInCollection, removeBookFromCollection } from "@/app/actions";
 import { ToastBar } from "react-hot-toast";
 import BookSkeleton from "../library/BookSkeleton";
 import { revalidatePath } from "next/cache";
@@ -12,14 +12,16 @@ import { revalidatePath } from "next/cache";
 interface CollectionBookProps {
   bookData: BookDB;
   selectedCollectionId: string;
+  setCollectionBooks: (books: BookDB[]) => void;
 }
 
 export default function CollectionBook({
   bookData,
   selectedCollectionId,
+  setCollectionBooks,
 }: CollectionBookProps) {
-  const [isBookLoading, setIsBookLoading] = useState(false);
-  console.log("book data in collection book", bookData);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const removeBook = async (bookId: string, collectionId: string) => {
     const response = removeBookFromCollection(bookId, collectionId);
 
@@ -28,22 +30,39 @@ export default function CollectionBook({
       success: "Book removed from collection",
       error: "Error removing book",
     });
+    // get books here
+    const books = await getBooksInCollection(selectedCollectionId);
+
+    toast.promise(response, {
+      loading: "Loading in book comp",
+      success: "Books are loaded in book comp",
+      error: "Error loading books in book comp",
+    });
+
+    setCollectionBooks(books as BookDB[]);
   };
 
-  return isBookLoading ? (
-    <BookSkeleton />
-  ) : (
-    bookData && (
-      <>
+  useEffect(() => {
+    console.log("book data", bookData);
+  }, [bookData]);
+  return (
+    <>
+      {!bookData && <BookSkeleton />}
+      {bookData && (
         <div className="card card-side bg-base-100 shadow-xl my-4 px-4">
           {bookData.imageLink && (
             <figure>
               <Image
+                style={{ visibility: imageLoaded ? "visible" : "hidden" }}
                 width={200}
                 height={400}
                 quality={100}
                 alt={bookData.title}
                 src={bookData.imageLink}
+                onLoad={() => {
+                  console.log("image loaded, setting it to true");
+                  setImageLoaded(true);
+                }}
               />
             </figure>
           )}
@@ -62,7 +81,7 @@ export default function CollectionBook({
             </div>
           </div>
         </div>
-      </>
-    )
+      )}
+    </>
   );
 }
