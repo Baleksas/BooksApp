@@ -1,28 +1,26 @@
-import { addBookToCollection } from "@/app/actions";
+import { addBookToCollection, getAllCollections } from "@/app/actions";
 import { BookAPI } from "@/types/Book";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast/headless";
 import Loading from "../shared/Loading";
+import Dropdown from "../shared/Dropdown";
+import { Collection } from "@/types/Collection";
 
 interface BookCardProps {
   book: BookAPI;
+  collectionOptions: Option[];
 }
 
-export default function BookCard({ book }: BookCardProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
+export default function BookCard({ book, collectionOptions }: BookCardProps) {
   const addBook = async (book: BookAPI, collectionId: string) => {
-    setIsLoading(true);
-    const response = await addBookToCollection(book, collectionId);
+    const response = addBookToCollection(book, collectionId);
 
-    if (response?.error) {
-      toast.error(response.error);
-      setIsLoading(false);
-    } else {
-      toast.success("Book added to collection");
-      setIsLoading(false);
-    }
+    toast.promise(response, {
+      loading: "Loading",
+      success: `${book.volumeInfo.title} added to collection`,
+      error: "Error adding book to collection",
+    });
   };
 
   return (
@@ -51,10 +49,14 @@ export default function BookCard({ book }: BookCardProps) {
           >
             Mark as read
           </button>
+          <Dropdown
+            title="Add to collection"
+            options={collectionOptions}
+            book={book}
+          ></Dropdown>
           <button className="btn btn-outline">Talk to the author</button>
         </div>
       </div>
-      {isLoading && <Loading></Loading>}
     </div>
   );
 }

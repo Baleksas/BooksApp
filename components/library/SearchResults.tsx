@@ -2,13 +2,34 @@
 import { BookSearchResponse } from "@/types/BookSearchResponse";
 import BookCard from "./BookCard";
 import { BookAPI } from "@/types/Book";
+import { useEffect, useState } from "react";
+import { getAllCollections } from "@/app/actions";
+import { Collection } from "@prisma/client";
 
 export default function SearchResults({
   searchResults,
 }: {
   searchResults: BookSearchResponse;
 }) {
-  console.log("searchResults", searchResults);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [collectionOptions, setCollectionOptions] = useState<Option[]>([]);
+  const getCollections = async () => {
+    const allCollections = await getAllCollections();
+    setCollections(allCollections);
+  };
+
+  useEffect(() => {
+    getCollections();
+  }, []);
+
+  useEffect(() => {
+    const options = collections.map((collection) => ({
+      name: collection.title,
+      value: collection.id,
+    }));
+    setCollectionOptions(options);
+  }, [collections]);
+
   return (
     <>
       {searchResults ? (
@@ -21,7 +42,11 @@ export default function SearchResults({
       <div className="mt-3 ">
         {searchResults ? (
           searchResults.items.map((book: BookAPI) => (
-            <BookCard key={book.id} book={book}></BookCard>
+            <BookCard
+              collectionOptions={collectionOptions}
+              key={book.id}
+              book={book}
+            ></BookCard>
           ))
         ) : (
           <p>No results yet</p>

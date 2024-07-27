@@ -10,7 +10,6 @@ export const addCollection = async (
   userId: string
 ) => {
   const title = formData.get("title");
-
   if (!title) {
     return {
       resetKey: Date.now(),
@@ -215,7 +214,6 @@ export const getBooksInCollection = async (collectionId: string) => {
       error: "Collection not found",
     };
   }
-  console.log("collection in db: ", collection);
   return collection.books;
 };
 
@@ -231,4 +229,15 @@ export const getBookByKey = async (key: string) => {
   );
 
   return await response.json();
+};
+
+export const getAllCollections = async () => {
+  //TODO: implement error handling
+  const allCollections = await prisma.collection.findMany({
+    include: {
+      books: true,
+    },
+  });
+
+  return allCollections;
 };
