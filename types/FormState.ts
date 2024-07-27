@@ -1,3 +1,5 @@
+import { Collection } from "./Collection";
+
 interface ErrorState {
   resetKey: any;
   error: string;
@@ -6,12 +8,7 @@ interface ErrorState {
 
 interface DataState {
   error: null;
-  data: {
-    id: string;
-    bookKeys: string[];
-    title: string;
-    authorId: string | null;
-  };
+  data: Collection;
   resetKey: string;
 }
 

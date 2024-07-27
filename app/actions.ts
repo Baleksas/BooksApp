@@ -1,15 +1,19 @@
 "use server";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import State from "@/types/FormState";
 import { BookAPI } from "@/types/Book";
 
-export const addCollection = async (prevState: State, formData: FormData) => {
+export const addCollection = async (
+  prevState: State,
+  formData: FormData,
+  userId: string
+) => {
   const title = formData.get("title");
 
   if (!title) {
     return {
-      resetKey: prevState.resetKey,
+      resetKey: Date.now(),
       error: "Title is required",
     };
   }
@@ -25,14 +29,15 @@ export const addCollection = async (prevState: State, formData: FormData) => {
 
   if (collectionExists) {
     return {
-      resetKey: prevState.resetKey,
+      resetKey: Date.now(),
       error: "Collection with this title already exists",
     };
   }
 
-  const collection = await prisma.collection.create({
+  const newCollection = await prisma.collection.create({
     data: {
-      title: formData.get("title") as string,
+      title: title as string,
+      creatorId: userId,
     },
   });
 
@@ -40,8 +45,8 @@ export const addCollection = async (prevState: State, formData: FormData) => {
 
   return {
     error: null,
-    data: collection,
-    resetKey: collection.id,
+    data: newCollection,
+    resetKey: Date.now(),
   };
 };
 
@@ -178,6 +183,18 @@ export const removeBookFromCollection = async (
   } catch (error) {
     return {
       error: "Could not remove book from collection",
+    };
+  }
+
+  try {
+    await prisma.book.delete({
+      where: {
+        id: bookId,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Could not remove book from books table",
     };
   }
 };
