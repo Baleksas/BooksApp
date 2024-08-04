@@ -7,7 +7,6 @@ import Loading from "../shared/Loading";
 import { getBooksInCollection, removeBookFromCollection } from "@/app/actions";
 import { ToastBar } from "react-hot-toast";
 import BookSkeleton from "../library/BookSkeleton";
-import { revalidatePath } from "next/cache";
 
 interface CollectionBookProps {
   bookData: BookDB;
@@ -42,9 +41,6 @@ export default function CollectionBook({
     setCollectionBooks(books as BookDB[]);
   };
 
-  useEffect(() => {
-    console.log("book data", bookData);
-  }, [bookData]);
   return (
     <>
       {!bookData && <BookSkeleton />}
@@ -73,7 +69,7 @@ export default function CollectionBook({
               <button className="btn btn-outline text-pink-400">Review</button>
               <button
                 onClick={() => removeBook(bookData.id, selectedCollectionId)}
-                className="btn btn-outline text-red-700"
+                className="btn btn-outline text-red-500"
               >
                 Remove from collection
               </button>

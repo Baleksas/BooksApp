@@ -1,11 +1,12 @@
 "use client";
 import { addCollection } from "@/app/actions";
 import State from "@/types/FormState";
+import { useEffect } from "react";
 import { useFormState } from "react-dom";
 import toast from "react-hot-toast/headless";
 
 export const AddCollectionForm = () => {
-  const userId = "aleksas.bag";
+  const userId = "123";
 
   const addCollectionWithUserId = (prevState: State, formData: FormData) =>
     addCollection(prevState, formData, userId);
@@ -18,7 +19,12 @@ export const AddCollectionForm = () => {
   );
   // TODO: Replace with actual user ID once authentication is implemented
 
-  if (state.error) toast.error(state.error);
+  useEffect(() => {
+    if (state.error) toast.error(state.error);
+    else {
+      toast.success("Collection added");
+    }
+  }, [state]);
 
   return (
     <form action={action} key={state?.resetKey}>
