@@ -1,6 +1,5 @@
 "use client";
 import CollectionSearch from "@/components/collections/CollectionSearch";
-import prisma from "@/lib/prisma";
 import { Collection } from "@/types/Collection";
 import { createContext, useContext, useEffect, useState } from "react";
 

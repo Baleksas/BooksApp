@@ -4,7 +4,7 @@ import CollectionBook from "./CollectionBook";
 import { BookDB } from "@/types/Book";
 import { deleteCollection, getCollectionsDictionary } from "@/app/actions";
 import toast from "react-hot-toast/headless";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CollectionContext } from "@/app/collections/page";
 
 interface SelectedCollectionProps {
@@ -59,7 +59,6 @@ export const CollectionContent = ({
     // Update the selected collection state
     setSelectedCollection(updatedCollection);
   };
-
   return selectedCollection ? (
     <div className="mt-3">
       <div className="flex flex-col gap-3">

@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import State from "@/types/FormState";
 import { BookAPI } from "@/types/Book";
 import { Collection } from "@/types/Collection";
+import { Review } from "@/types/Review";
 
 export const addCollection = async (
   prevState: State,
@@ -303,4 +304,41 @@ export const getCollectionsDictionary = async () => {
   });
 
   return collectionsDictionary;
+};
+
+// Reviews
+
+export const createReview = async (bookId: string, review: Review) => {
+  // check if review for book already exists
+
+  const reviewExists = await prisma.review.findFirst({
+    where: {
+      bookId: bookId,
+      creatorId: review.creatorId,
+    },
+  });
+  console.log("review exists", reviewExists);
+  if (reviewExists) {
+    return {
+      error: "You already have a review for this book",
+    };
+  }
+  const newReview = await prisma.review.create({
+    data: {
+      comment: review.comment,
+      rating: review.rating,
+      bookId: bookId,
+      creatorId: review.creatorId,
+    },
+  });
+
+  return newReview;
+};
+
+export const getReviews = async () => {
+  return prisma.review.findMany({
+    include: {
+      book: true,
+    },
+  });
 };

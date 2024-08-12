@@ -1,23 +1,15 @@
 import React from "react";
-import prisma from "@/lib/prisma";
+import ReviewCard from "@/components/reviews/ReviewCard";
+import { getReviews } from "../actions";
+import { ReviewDB } from "@/types/Review";
 
 export default async function Page() {
-  const reviews = await prisma.review.findMany({
-    where: {
-      // TODO: Only show reviews for the currently logged in user
-      creatorId: "clx95f1120001mfyk227rrbgp",
-    },
-  });
+  const reviews = (await getReviews()) as ReviewDB[];
 
   return (
-    <div>
+    <div className="w-full">
       {reviews.length > 0 ? (
-        reviews.map((review) => (
-          <div key={review.id}>
-            <h2>{review.rating}</h2>
-            <p>{review.comment}</p>
-          </div>
-        ))
+        reviews.map((review) => <ReviewCard key={review.id} review={review} />)
       ) : (
         <p>No reviews yet</p>
       )}

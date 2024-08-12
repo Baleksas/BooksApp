@@ -4,9 +4,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast/headless";
 import Loading from "../shared/Loading";
-import { getBooksInCollection, removeBookFromCollection } from "@/app/actions";
+import {
+  createReview,
+  getBooksInCollection,
+  removeBookFromCollection,
+} from "@/app/actions";
 import { ToastBar } from "react-hot-toast";
 import BookSkeleton from "../library/BookSkeleton";
+import Modal from "../shared/Modal";
+import { Review, ReviewDB } from "@/types/Review";
 
 interface CollectionBookProps {
   bookData: BookDB;
@@ -20,6 +26,7 @@ export default function CollectionBook({
   setCollectionBooks,
 }: CollectionBookProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const removeBook = async (bookId: string, collectionId: string) => {
     const response = removeBookFromCollection(bookId, collectionId);
@@ -41,11 +48,28 @@ export default function CollectionBook({
     setCollectionBooks(books as BookDB[]);
   };
 
+  const startReview = async (bookId: string) => {
+    const doc = document.getElementById(bookId) as HTMLDialogElement;
+    doc.showModal();
+  };
+
+  const onCreateReview = async (review: Review) => {
+    console.log("creating review", bookData.id, review);
+    const response = await createReview(bookData.id, review);
+    if ("error" in response) {
+      toast.error(response.error);
+    }
+  };
+
   return (
     <>
+      <Modal
+        action={(review: Review) => onCreateReview(review)}
+        bookId={bookData.id}
+      />
       {!bookData && <BookSkeleton />}
       {bookData && (
-        <div className="card card-side bg-base-100 shadow-xl my-4 px-4">
+        <div className="card card-side bg-base-300 shadow-xl my-4 px-4">
           {bookData.imageLink && (
             <figure>
               <Image
@@ -66,7 +90,12 @@ export default function CollectionBook({
             <h2 className="card-title">{bookData.title}</h2>
             <h2>{bookData.authorName}</h2>
             <div className="card-actions justify-end">
-              <button className="btn btn-outline text-pink-400">Review</button>
+              <button
+                className="btn btn-outline text-pink-400"
+                onClick={() => startReview(bookData.id)}
+              >
+                Review
+              </button>
               <button
                 onClick={() => removeBook(bookData.id, selectedCollectionId)}
                 className="btn btn-outline text-red-500"
