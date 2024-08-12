@@ -6,7 +6,7 @@ interface ErrorState {
   data?: undefined;
 }
 
-interface DataState {
+export interface DataState {
   error: null;
   data: Collection;
   resetKey: string;

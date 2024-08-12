@@ -1,88 +1,76 @@
 "use client";
 import { AddCollectionForm } from "./AddCollectionForm";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { CollectionContent } from "./CollectionContent";
 import toast from "react-hot-toast/headless";
 import { Collection } from "@/types/Collection";
 import { getBooksInCollection, getCollectionById } from "@/app/actions";
 import { BookDB } from "@/types/Book";
+import { CollectionContext } from "@/app/collections/page";
 
-interface CollectionsProps {
-  collectionsDictionary: { id: string; title: string }[] | undefined;
-}
-
-const CollectionSearch = ({ collectionsDictionary }: CollectionsProps) => {
+const CollectionSearch = () => {
   const [selectedCollection, setSelectedCollection] = useState<
     Collection | undefined
   >(undefined);
-  const [selectedCollectionId, setSelectedCollectionId] = useState<
-    string | undefined
-  >(undefined);
 
-  const [collectionBooks, setCollectionBooks] = useState<BookDB[] | []>([]);
+  const context = useContext(CollectionContext);
 
-  const setNewCollection = async (collectionId: string) => {
-    const response = await getCollectionById(collectionId);
+  const { collections } = context;
 
-    setSelectedCollection(response as Collection);
+  const changeSelectedCollection = (collectionId: string) => {
+    const selectedCollection = collections?.find(
+      (collection) => collection.id === collectionId
+    );
+    setSelectedCollection(selectedCollection);
   };
 
+  const prevLengthRef = useRef<number>(0);
+
   useEffect(() => {
-    if (collectionsDictionary && collectionsDictionary.length > 0) {
-      setSelectedCollectionId(collectionsDictionary[0].id);
+    const currentLength = collections?.length || 0;
+
+    // TODO: Adjust logic to take deleted id into consideration
+    if (
+      (prevLengthRef.current === 0 && currentLength > 0) ||
+      currentLength < prevLengthRef.current
+    ) {
+      setSelectedCollection(collections[0]);
+    } else if (!collections) {
+      setSelectedCollection(undefined);
+    } else if (currentLength > prevLengthRef.current) {
+      setSelectedCollection(collections[currentLength - 1]);
     }
-  }, [collectionsDictionary]);
 
-  useEffect(() => {
-    console.log(collectionsDictionary);
-    if (!selectedCollectionId) return;
-
-    const fetchBooks = async () => {
-      const response = getBooksInCollection(selectedCollectionId);
-
-      await toast.promise(response, {
-        loading: "Loading",
-        success: "Books are loaded",
-        error: "Could not load books",
-      });
-
-      const books = (await response) as BookDB[];
-      setCollectionBooks(books as BookDB[]);
-    };
-
-    setNewCollection(selectedCollectionId);
-    fetchBooks();
-  }, [selectedCollectionId]);
+    prevLengthRef.current = currentLength;
+  }, [collections?.length]);
 
   return (
     <>
       <div className="flex flex-col sm:flex-row gap-3">
-        <AddCollectionForm />
-        {selectedCollection &&
-          collectionsDictionary &&
-          collectionsDictionary.length > 1 && (
-            <div className="flex">
-              <select
-                defaultValue={"read"}
-                onChange={(e) => setSelectedCollectionId(e.target.value)}
-                className="select select-bordered w-full"
-              >
-                {collectionsDictionary.map(
-                  (collection: { title: string; id: string }) => (
-                    <option key={collection.id} value={collection.id}>
-                      {collection.title}
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
-          )}
+        <AddCollectionForm
+          setSelectedCollection={setSelectedCollection}
+          selectedCollection={selectedCollection}
+        />
+        {selectedCollection && collections && collections.length > 1 && (
+          <div className="flex">
+            <select
+              value={selectedCollection.id}
+              onChange={(e) => changeSelectedCollection(e.target.value)}
+              className="select select-bordered w-full"
+            >
+              {collections.map((collection: { title: string; id: string }) => (
+                <option key={collection.id} value={collection.id}>
+                  {collection.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
       {selectedCollection ? (
         <CollectionContent
-          collectionBooks={collectionBooks}
+          setSelectedCollection={setSelectedCollection}
           selectedCollection={selectedCollection}
-          setCollectionBooks={setCollectionBooks}
         />
       ) : (
         <div className="text-xl mt-5">

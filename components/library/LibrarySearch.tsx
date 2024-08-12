@@ -26,6 +26,7 @@ export default function BookSearch() {
     }
   }, [currentStartIndex]);
 
+  // TODO: can we change this to server function?
   const fetchData = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
     setIsLoading(true);

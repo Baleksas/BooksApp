@@ -6,6 +6,7 @@ import toast from "react-hot-toast/headless";
 import Loading from "../shared/Loading";
 import Dropdown from "../shared/Dropdown";
 import { Collection } from "@/types/Collection";
+import { useFormStatus } from "react-dom";
 
 interface BookCardProps {
   book: BookAPI;
@@ -14,13 +15,11 @@ interface BookCardProps {
 
 export default function BookCard({ book, collectionOptions }: BookCardProps) {
   const addBook = async (book: BookAPI, collectionId: string) => {
-    const response = addBookToCollection(book, collectionId);
+    const response = await addBookToCollection(book, collectionId);
 
-    toast.promise(response, {
-      loading: "Loading",
-      success: `${book.volumeInfo.title} added to collection`,
-      error: "Error adding book to collection",
-    });
+    if (response?.error) {
+      toast.error(response.error);
+    } else toast.success(`${book.volumeInfo.title} added to collection`);
   };
 
   return (
@@ -45,6 +44,7 @@ export default function BookCard({ book, collectionOptions }: BookCardProps) {
           <button className="btn btn-outline text-pink-400">Review</button>
           <button
             onClick={() => addBook(book, "dawdaw2")}
+            type="submit"
             className="btn btn-outline text-green-600"
           >
             Mark as read
@@ -54,7 +54,9 @@ export default function BookCard({ book, collectionOptions }: BookCardProps) {
             options={collectionOptions}
             book={book}
           ></Dropdown>
-          <button className="btn btn-outline">Talk to the author</button>
+          <button type="button" className="btn btn-outline">
+            Talk to the author
+          </button>
         </div>
       </div>
     </div>

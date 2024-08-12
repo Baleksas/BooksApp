@@ -1,8 +1,8 @@
 "use server";
-import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import State from "@/types/FormState";
 import { BookAPI } from "@/types/Book";
+import { Collection } from "@/types/Collection";
 
 export const addCollection = async (
   prevState: State,
@@ -40,13 +40,66 @@ export const addCollection = async (
     },
   });
 
-  revalidatePath("/collections");
-
   return {
     error: null,
     data: newCollection,
     resetKey: Date.now(),
   };
+};
+
+export const deleteCollection = async (collectionId: string) => {
+  if (!collectionId) {
+    return {
+      error: "Collection ID is required",
+    };
+  }
+
+  const collection = await prisma.collection.findUnique({
+    where: {
+      id: collectionId,
+    },
+  });
+
+  if (!collection) {
+    return {
+      error: "Collection not found",
+    };
+  }
+
+  await prisma.collection.delete({
+    where: {
+      id: collectionId,
+    },
+  });
+
+  return {
+    error: null,
+  };
+};
+
+export const getCollectionById = async (collectionId: string) => {
+  if (!collectionId) {
+    return {
+      error: "Collection ID is required",
+    };
+  }
+
+  const collection = await prisma.collection.findUnique({
+    where: {
+      id: collectionId,
+    },
+    include: {
+      books: true,
+    },
+  });
+
+  if (!collection) {
+    return {
+      error: "Collection not found",
+    };
+  }
+
+  return collection as Collection;
 };
 
 export const addBookToCollection = async (
@@ -70,7 +123,7 @@ export const addBookToCollection = async (
       "",
   };
 
-  const bookInCollectionExists = await prisma.collection.findFirst({
+  const bookInCollectionExists = !!(await prisma.collection.findFirst({
     where: {
       id: collectionId,
       books: {
@@ -79,11 +132,10 @@ export const addBookToCollection = async (
         },
       },
     },
-  });
-
+  }));
   if (bookInCollectionExists) {
     return {
-      error: "This book is already in the collection",
+      error: "Book already exists in the collection",
     };
   }
 
@@ -199,7 +251,6 @@ export const removeBookFromCollection = async (
 };
 
 export const getBooksInCollection = async (collectionId: string) => {
-  console.log("collectionid", collectionId);
   const collection = await prisma.collection.findUnique({
     where: {
       id: collectionId,
@@ -240,4 +291,16 @@ export const getAllCollections = async () => {
   });
 
   return allCollections;
+};
+
+export const getCollectionsDictionary = async () => {
+  //TODO: implement error handling
+  const collectionsDictionary = await prisma.collection.findMany({
+    select: {
+      id: true,
+      title: true,
+    },
+  });
+
+  return collectionsDictionary;
 };
