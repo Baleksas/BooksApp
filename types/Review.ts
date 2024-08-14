@@ -1,6 +1,7 @@
 import { BookDB } from "./Book";
 
 export interface Review {
+  id?: string;
   comment: string;
   rating: number;
   bookId?: string;

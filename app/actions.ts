@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import State from "@/types/FormState";
 import { BookAPI } from "@/types/Book";
 import { Collection } from "@/types/Collection";
-import { Review } from "@/types/Review";
+import { Review, ReviewDB } from "@/types/Review";
 
 export const addCollection = async (
   prevState: State,
@@ -309,8 +309,6 @@ export const getCollectionsDictionary = async () => {
 // Reviews
 
 export const createReview = async (bookId: string, review: Review) => {
-  // check if review for book already exists
-
   const reviewExists = await prisma.review.findFirst({
     where: {
       bookId: bookId,
@@ -333,6 +331,66 @@ export const createReview = async (bookId: string, review: Review) => {
   });
 
   return newReview;
+};
+
+export const editReview = async (review: Review) => {
+  console.log("getting this review:", review);
+  const reviewExists = await prisma.review.findUnique({
+    where: {
+      id: review.id,
+    },
+  });
+
+  if (!reviewExists) {
+    return {
+      error: "Review not found",
+    };
+  }
+
+  const updatedReview = await prisma.review.update({
+    where: {
+      id: review.id,
+    },
+    data: {
+      comment: review.comment,
+      rating: review.rating,
+    },
+    include: {
+      book: true,
+    },
+  });
+  console.log("updated review : ", updatedReview);
+  return {
+    data: updatedReview,
+  };
+};
+export const deleteReview = async (reviewId: string) => {
+  // check if review exists
+
+  const reviewExists = await prisma.review.findUnique({
+    where: {
+      id: reviewId,
+    },
+    include: {
+      book: true,
+    },
+  });
+
+  if (!reviewExists) {
+    return {
+      error: "Review not found",
+    };
+  }
+
+  await prisma.review.delete({
+    where: {
+      id: reviewId,
+    },
+  });
+
+  return {
+    data: reviewExists,
+  };
 };
 
 export const getReviews = async () => {

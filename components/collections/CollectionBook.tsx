@@ -49,8 +49,8 @@ export default function CollectionBook({
   };
 
   const startReview = async (bookId: string) => {
-    const doc = document.getElementById(bookId) as HTMLDialogElement;
-    doc.showModal();
+    const modalElement = document.getElementById(bookId) as HTMLDialogElement;
+    modalElement.showModal();
   };
 
   const onCreateReview = async (review: Review) => {
@@ -65,7 +65,7 @@ export default function CollectionBook({
     <>
       <Modal
         action={(review: Review) => onCreateReview(review)}
-        bookId={bookData.id}
+        dialogId={bookData.id}
       />
       {!bookData && <BookSkeleton />}
       {bookData && (

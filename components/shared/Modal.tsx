@@ -1,5 +1,5 @@
 import { createReview } from "@/app/actions";
-import { Review } from "@/types/Review";
+import { Review, ReviewDB } from "@/types/Review";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast/headless";
 
@@ -9,7 +9,8 @@ interface ModalProps {
   visible?: boolean;
   onClose?: () => void;
   action: (review: Review) => void;
-  bookId: string;
+  dialogId: string;
+  reviewData?: Review;
 }
 
 const Modal = ({
@@ -18,15 +19,26 @@ const Modal = ({
   visible,
   onClose,
   action,
-  bookId,
+  dialogId,
+  reviewData,
 }: ModalProps) => {
   const modalRef = useRef<HTMLDialogElement | null>(null);
 
   const [review, setReview] = useState<Review>({
+    id: "",
     rating: 0,
     comment: "",
     creatorId: "123",
   });
+
+  useEffect(() => {
+    setReview({
+      id: reviewData?.id || "",
+      rating: reviewData?.rating || 0,
+      comment: reviewData?.comment || "",
+      creatorId: "123",
+    });
+  }, [reviewData]);
 
   useEffect(() => {
     if (!modalRef.current) {
@@ -49,7 +61,7 @@ const Modal = ({
   return (
     <dialog
       ref={modalRef}
-      id={bookId}
+      id={dialogId}
       className="modal"
       onCancel={() => handleESC}
     >
@@ -64,6 +76,7 @@ const Modal = ({
                   <span className="label-text">Review</span>
                 </div>
                 <input
+                  value={review.comment}
                   onChange={(e) =>
                     setReview({ ...review, comment: e.target.value })
                   }
@@ -76,18 +89,22 @@ const Modal = ({
                   <span className="label-text">Rating</span>
                 </div>
                 <input
+                  value={review.rating || 0}
+                  type="number"
                   onChange={(e) =>
                     setReview({ ...review, rating: parseInt(e.target.value) })
                   }
                   className="input input-bordered"
-                  type="text"
                 />
               </label>
             </div>
             <div className="modal-action">
               <button
                 className="btn btn-primary"
-                onClick={() => action && action(review)}
+                onClick={() => {
+                  console.log("review passed", review);
+                  action(review);
+                }}
               >
                 submit
               </button>
