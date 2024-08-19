@@ -4,7 +4,46 @@ import State from "@/types/FormState";
 import { BookAPI } from "@/types/Book";
 import { Collection } from "@/types/Collection";
 import { Review, ReviewDB } from "@/types/Review";
+import { redirect } from "next/navigation";
 
+// External API
+// FIXME: This function is not used in the app
+export const getBooksByTitle = async (
+  title: string,
+  limit: number,
+  page: number
+) => {
+  if (!title) {
+    throw new Error("Provided title is empty");
+  }
+
+  const response = await fetch(
+    `https://www.googleapis.com/books/v1/volumes?q=${title}&startIndex=${page}&maxResults=${limit}`,
+    {
+      next: {
+        tags: ["library"],
+      },
+    }
+  );
+
+  return await response.json();
+};
+
+export const getBookByKey = async (key: string) => {
+  const response = await fetch(
+    `https://www.googleapis.com/books/v1/volumes/${key}
+  `,
+    {
+      next: {
+        tags: ["book"],
+      },
+    }
+  );
+
+  return await response.json();
+};
+
+// Collections
 export const addCollection = async (
   prevState: State,
   formData: FormData,
@@ -269,20 +308,6 @@ export const getBooksInCollection = async (collectionId: string) => {
   return collection.books;
 };
 
-export const getBookByKey = async (key: string) => {
-  const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes/${key}
-  `,
-    {
-      next: {
-        tags: ["book"],
-      },
-    }
-  );
-
-  return await response.json();
-};
-
 export const getAllCollections = async () => {
   //TODO: implement error handling
   const allCollections = await prisma.collection.findMany({
@@ -315,13 +340,13 @@ export const createReview = async (bookId: string, review: Review) => {
       creatorId: review.creatorId,
     },
   });
-  console.log("review exists", reviewExists);
+
   if (reviewExists) {
     return {
       error: "You already have a review for this book",
     };
   }
-  const newReview = await prisma.review.create({
+  await prisma.review.create({
     data: {
       comment: review.comment,
       rating: review.rating,
@@ -330,11 +355,10 @@ export const createReview = async (bookId: string, review: Review) => {
     },
   });
 
-  return newReview;
+  redirect("/reviews");
 };
 
 export const editReview = async (review: Review) => {
-  console.log("getting this review:", review);
   const reviewExists = await prisma.review.findUnique({
     where: {
       id: review.id,
@@ -359,7 +383,7 @@ export const editReview = async (review: Review) => {
       book: true,
     },
   });
-  console.log("updated review : ", updatedReview);
+
   return {
     data: updatedReview,
   };

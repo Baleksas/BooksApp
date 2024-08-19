@@ -1,18 +1,43 @@
-import React from "react";
+"use client";
+import React, { createContext, useEffect, useState } from "react";
 import ReviewCard from "@/components/reviews/ReviewCard";
 import { getReviews } from "../actions";
-import { ReviewDB } from "@/types/Review";
+import { Review, ReviewDB } from "@/types/Review";
 
-export default async function Page() {
-  const reviews = (await getReviews()) as ReviewDB[];
+interface ReviewContextType {
+  reviews: ReviewDB[];
+  setReviews: React.Dispatch<React.SetStateAction<ReviewDB[]>>;
+}
 
+const ReviewContext = createContext<ReviewContextType>({
+  reviews: [],
+  setReviews: () => {},
+});
+
+export default function Page() {
+  const [reviews, setReviews] = useState<ReviewDB[]>([]);
+
+  const getData = async () => {
+    const response = await getReviews();
+    setReviews(response as ReviewDB[]);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className="w-full">
-      {reviews.length > 0 ? (
-        reviews.map((review) => <ReviewCard key={review.id} review={review} />)
-      ) : (
-        <p>No reviews yet</p>
-      )}
+      <ReviewContext.Provider value={{ reviews, setReviews }}>
+        {reviews.length > 0 ? (
+          reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))
+        ) : (
+          <p>No reviews yet</p>
+        )}
+      </ReviewContext.Provider>
     </div>
   );
 }
+
+export { ReviewContext };

@@ -1,20 +1,13 @@
 "use client";
-import { addCollection } from "@/app/actions";
+import { addCollection, getAllCollections } from "@/app/actions";
 import { CollectionContext } from "@/app/collections/page";
 import { Collection } from "@/types/Collection";
 import State, { DataState } from "@/types/FormState";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useFormState } from "react-dom";
 import toast from "react-hot-toast/headless";
 
-interface SelectedCollectionProps {
-  selectedCollection: Collection | undefined;
-  setSelectedCollection: (collection: Collection | undefined) => void;
-}
-export const AddCollectionForm = ({
-  setSelectedCollection,
-  selectedCollection,
-}: SelectedCollectionProps) => {
+export const AddCollectionForm = () => {
   const userId = "123";
 
   const context = useContext(CollectionContext);
@@ -26,6 +19,7 @@ export const AddCollectionForm = ({
     formData: FormData
   ) => {
     const updatedState = await addCollection(prevState, formData, userId);
+    // should this be here?
     setCollections([...collections!, updatedState.data as any]);
     return updatedState;
   };
@@ -45,16 +39,15 @@ export const AddCollectionForm = ({
 
     if (state.error) toast.error(state.error);
     else {
-      getData();
-
       toast.success("Collection added");
+
+      getData();
     }
   };
 
   const getData = async () => {
-    const response = await fetch("/api/collections");
-    const collectionsData = await response.json();
-    setCollections(collectionsData);
+    const allCollections = await getAllCollections();
+    setCollections(allCollections as Collection[]);
   };
 
   return (

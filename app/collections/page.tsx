@@ -2,6 +2,7 @@
 import CollectionSearch from "@/components/collections/CollectionSearch";
 import { Collection } from "@/types/Collection";
 import { createContext, useContext, useEffect, useState } from "react";
+import { getAllCollections } from "../actions";
 
 interface CollectionContextType {
   collections: Collection[];
@@ -17,9 +18,8 @@ const Page = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
 
   const getData = async () => {
-    const response = await fetch("/api/collections");
-    const collectionsData = await response.json();
-    setCollections(collectionsData as Collection[]);
+    const response = await getAllCollections();
+    setCollections(response as Collection[]);
   };
 
   useEffect(() => {

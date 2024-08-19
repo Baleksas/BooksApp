@@ -47,10 +47,7 @@ const CollectionSearch = () => {
   return (
     <>
       <div className="flex flex-col sm:flex-row gap-3">
-        <AddCollectionForm
-          setSelectedCollection={setSelectedCollection}
-          selectedCollection={selectedCollection}
-        />
+        <AddCollectionForm />
         {selectedCollection && collections && collections.length > 1 && (
           <div className="flex">
             <select

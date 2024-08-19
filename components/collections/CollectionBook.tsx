@@ -26,7 +26,6 @@ export default function CollectionBook({
   setCollectionBooks,
 }: CollectionBookProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const removeBook = async (bookId: string, collectionId: string) => {
     const response = removeBookFromCollection(bookId, collectionId);
@@ -54,10 +53,11 @@ export default function CollectionBook({
   };
 
   const onCreateReview = async (review: Review) => {
-    console.log("creating review", bookData.id, review);
     const response = await createReview(bookData.id, review);
-    if ("error" in response) {
+    if (response?.error) {
       toast.error(response.error);
+    } else {
+      toast.success(`Review for book "${bookData.title}" created successfully`);
     }
   };
 
@@ -94,6 +94,7 @@ export default function CollectionBook({
                 className="btn btn-outline text-pink-400"
                 onClick={() => startReview(bookData.id)}
               >
+                {/* TODO: hide this button if review exists for this book */}
                 Review
               </button>
               <button

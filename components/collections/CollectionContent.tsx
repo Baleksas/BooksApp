@@ -2,7 +2,11 @@
 import { Collection } from "@/types/Collection";
 import CollectionBook from "./CollectionBook";
 import { BookDB } from "@/types/Book";
-import { deleteCollection, getCollectionsDictionary } from "@/app/actions";
+import {
+  deleteCollection,
+  getAllCollections,
+  getCollectionsDictionary,
+} from "@/app/actions";
 import toast from "react-hot-toast/headless";
 import { useContext, useEffect, useState } from "react";
 import { CollectionContext } from "@/app/collections/page";
@@ -26,17 +30,16 @@ export const CollectionContent = ({
     if (response?.error) {
       toast.error(response.error);
     } else {
-      getData();
-
       toast.success("Collection deleted");
+
+      getData();
     }
   };
 
   const getData = async () => {
-    const response = await fetch("/api/collections");
-    const collectionsData = await response.json();
+    const response = await getAllCollections();
 
-    setCollections(collectionsData);
+    setCollections(response as Collection[]);
   };
 
   const setCollectionBooks = async (books: BookDB[]) => {
