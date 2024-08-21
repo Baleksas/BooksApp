@@ -9,7 +9,10 @@ const Navbar = () => {
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
-        <label htmlFor="my-drawer-2" className="btn  drawer-button lg:hidden">
+        <label
+          htmlFor="sidebar-toggle"
+          className="btn  drawer-button lg:hidden"
+        >
           <FontAwesomeIcon icon={faBars} />{" "}
         </label>
       </div>
