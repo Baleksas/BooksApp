@@ -7,7 +7,6 @@ import { Review, ReviewDB } from "@/types/Review";
 import { redirect } from "next/navigation";
 
 // External API
-// FIXME: This function is not used in the app
 export const getBooksByTitle = async (
   title: string,
   limit: number,

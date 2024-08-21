@@ -6,6 +6,7 @@ import SearchInput from "../SearchInput";
 import Pagination from "../shared/Pagination";
 import Loading from "../shared/Loading";
 import toast from "react-hot-toast/headless";
+import { getBooksByTitle } from "@/app/actions";
 
 export default function BookSearch() {
   const [searchOptions, setSearchOptions] = useState({
@@ -22,55 +23,30 @@ export default function BookSearch() {
     if (initialRender.current) {
       initialRender.current = false;
     } else {
-      fetchData();
+      getSearchResults();
     }
   }, [currentStartIndex]);
 
-  // TODO: can we change this to server function?
-  const fetchData = async (e?: React.MouseEvent<HTMLButtonElement>) => {
-    e?.preventDefault();
-    setIsLoading(true);
+  const getSearchResults = async (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
 
-    try {
-      const response = await fetch(
-        `/api/library?title=${encodeURIComponent(
-          searchOptions.title
-        )}&limit=${encodeURIComponent(
-          searchOptions.resultsPerPage
-        )}&page=${currentStartIndex}`,
-        {
-          headers: {
-            method: "GET",
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        toast.error(error.message);
-        setIsLoading(false);
-      } else {
-        const data = await response.json();
-        console.log(data);
-        setIsLoading(false);
-        setSearchResults(data);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-    }
+    const response = await getBooksByTitle(
+      searchOptions.title,
+      searchOptions.resultsPerPage,
+      currentStartIndex
+    );
+    setSearchResults(response);
   };
 
   return (
     <>
-      <form>
+      <form onSubmit={getSearchResults}>
         <div className="flex gap-2 flex-col sm:flex-row sm:items-end ">
           <SearchInput
             searchOptions={searchOptions}
             setSearchOptions={setSearchOptions}
           />
-          <button onClick={fetchData} className="btn btn-outline">
+          <button type="submit" className="btn btn-outline">
             Search
           </button>
         </div>
