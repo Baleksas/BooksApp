@@ -1,7 +1,5 @@
-import { createReview } from "@/app/actions";
-import { Review, ReviewDB } from "@/types/Review";
+import { Review } from "@/types/Review";
 import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast/headless";
 
 interface ModalProps {
   text?: string;

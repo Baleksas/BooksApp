@@ -5,7 +5,6 @@ import { BookSearchResponse } from "@/types/BookSearchResponse";
 import SearchInput from "../SearchInput";
 import Pagination from "../shared/Pagination";
 import Loading from "../shared/Loading";
-import toast from "react-hot-toast/headless";
 import { getBooksByTitle } from "@/app/actions";
 
 export default function BookSearch() {

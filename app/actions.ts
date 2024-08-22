@@ -365,7 +365,7 @@ export const createReview = async (
       creatorId: review.creatorId,
     },
   });
-
+  console.log("reviewExists", reviewExists);
   if (reviewExists) {
     return {
       error: "You already have a review for this book",

@@ -50,7 +50,7 @@ export default function CollectionBook({
   };
 
   const onCreateReview = async (review: Review) => {
-    const response = await createReview(bookData.id, review);
+    const response = await createReview(bookData, review);
     if (response?.error) {
       toast.error(response.error);
     } else {
