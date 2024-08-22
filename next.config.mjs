@@ -26,6 +26,12 @@ const nextConfig = {
         port: "",
         pathname: "/books/**",
       },
+      {
+        protocol: "https",
+        hostname: "s.gravatar.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

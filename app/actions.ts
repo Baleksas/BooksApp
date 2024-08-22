@@ -1,7 +1,7 @@
 "use server";
 import prisma from "@/lib/prisma";
 import State from "@/types/FormState";
-import { BookAPI } from "@/types/Book";
+import { BookAPI, BookDB } from "@/types/Book";
 import { Collection } from "@/types/Collection";
 import { Review, ReviewDB } from "@/types/Review";
 import { redirect } from "next/navigation";
@@ -332,10 +332,36 @@ export const getCollectionsDictionary = async () => {
 
 // Reviews
 
-export const createReview = async (bookId: string, review: Review) => {
+export const createReview = async (
+  bookData: BookDB | BookAPI,
+  review: Review
+) => {
+  let bookExists = await prisma.book.findUnique({
+    where: {
+      id: bookData.id,
+    },
+  });
+
+  if (!bookExists && "volumeInfo" in bookData) {
+    const bookObject: BookDB = {
+      id: bookData.id,
+      etag: bookData.etag,
+      title: bookData.volumeInfo.title,
+      authorName: bookData.volumeInfo.authors?.[0] || "",
+      imageLink:
+        bookData.volumeInfo.imageLinks?.thumbnail ||
+        bookData.volumeInfo.imageLinks?.smallThumbnail ||
+        "",
+    };
+
+    bookExists = await prisma.book.create({
+      data: bookObject,
+    });
+  }
+
   const reviewExists = await prisma.review.findFirst({
     where: {
-      bookId: bookId,
+      bookId: bookData.id,
       creatorId: review.creatorId,
     },
   });
@@ -349,7 +375,7 @@ export const createReview = async (bookId: string, review: Review) => {
     data: {
       comment: review.comment,
       rating: review.rating,
-      bookId: bookId,
+      bookId: bookData.id,
       creatorId: review.creatorId,
     },
   });

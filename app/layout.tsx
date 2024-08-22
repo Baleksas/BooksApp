@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import Notifications from "@/components/shared/Notifications";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,12 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <main>
-          <Notifications />
-          <Sidebar>{children}</Sidebar>
-        </main>
-      </body>
+      <UserProvider>
+        <body>
+          <main>
+            <Notifications />
+            <Sidebar>{children}</Sidebar>
+          </main>
+        </body>
+      </UserProvider>
     </html>
   );
 }

@@ -3,6 +3,7 @@ import CollectionSearch from "@/components/collections/CollectionSearch";
 import { Collection } from "@/types/Collection";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAllCollections } from "../actions";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 
 interface CollectionContextType {
   collections: Collection[];
@@ -36,4 +37,4 @@ const Page = () => {
 };
 
 export { CollectionContext };
-export default Page;
+export default withPageAuthRequired(Page);

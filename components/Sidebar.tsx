@@ -3,13 +3,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import Navbar from "./Navbar";
+import { useUser } from "@auth0/nextjs-auth0/client";
+
 const Sidebar = ({
   children, // will be a page or nested layout
 }: {
   children: React.ReactNode;
 }) => {
   const pathname = usePathname();
-
+  const { user, error, isLoading } = useUser();
   const hideSidebar = () => {
     const sidebar = document.getElementById(
       "sidebar-toggle"
@@ -42,33 +44,37 @@ const Sidebar = ({
               Home
             </Link>
           </li>
-          <li>
-            <Link
-              onClick={hideSidebar}
-              className={` ${pathname === "/collections" ? "active" : ""}`}
-              href="/collections"
-            >
-              Reading lists
-            </Link>
-          </li>
-          <li>
-            <Link
-              onClick={hideSidebar}
-              className={` ${pathname === "/library" ? "active" : ""}`}
-              href="/library"
-            >
-              Library
-            </Link>
-          </li>
-          <li>
-            <Link
-              onClick={hideSidebar}
-              className={` ${pathname === "/reviews" ? "active" : ""}`}
-              href="/reviews"
-            >
-              Reviews
-            </Link>
-          </li>
+          {user && (
+            <>
+              <li>
+                <Link
+                  onClick={hideSidebar}
+                  className={` ${pathname === "/collections" ? "active" : ""}`}
+                  href="/collections"
+                >
+                  Reading lists
+                </Link>
+              </li>
+              <li>
+                <Link
+                  onClick={hideSidebar}
+                  className={` ${pathname === "/library" ? "active" : ""}`}
+                  href="/library"
+                >
+                  Library
+                </Link>
+              </li>
+              <li>
+                <Link
+                  onClick={hideSidebar}
+                  className={` ${pathname === "/reviews" ? "active" : ""}`}
+                  href="/reviews"
+                >
+                  Reviews
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </div>

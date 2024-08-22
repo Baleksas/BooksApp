@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useState } from "react";
 import ReviewCard from "@/components/reviews/ReviewCard";
 import { getReviews } from "../actions";
 import { Review, ReviewDB } from "@/types/Review";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 
 interface ReviewContextType {
   reviews: ReviewDB[];
@@ -14,8 +15,9 @@ const ReviewContext = createContext<ReviewContextType>({
   setReviews: () => {},
 });
 
-export default function Page() {
+const Page = () => {
   const [reviews, setReviews] = useState<ReviewDB[]>([]);
+  const { user, error, isLoading } = useUser();
 
   const getData = async () => {
     const response = await getReviews();
@@ -25,6 +27,10 @@ export default function Page() {
   useEffect(() => {
     getData();
   }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+
   return (
     <div className="w-full">
       <ReviewContext.Provider value={{ reviews, setReviews }}>
@@ -38,6 +44,7 @@ export default function Page() {
       </ReviewContext.Provider>
     </div>
   );
-}
+};
 
+export default withPageAuthRequired(Page);
 export { ReviewContext };

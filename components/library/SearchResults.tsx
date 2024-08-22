@@ -45,7 +45,7 @@ export default function SearchResults({
             <BookCard
               collectionOptions={collectionOptions}
               key={book.id}
-              book={book}
+              bookData={book}
             ></BookCard>
           ))
         ) : (

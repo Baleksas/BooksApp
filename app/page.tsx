@@ -1,6 +1,10 @@
+"use client";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
 
-export default async function Page() {
+export default function Page() {
+  const { user, error, isLoading } = useUser();
+
   return (
     <div className="hero min-h-full">
       <div className="hero-content text-center">
@@ -16,9 +20,15 @@ export default async function Page() {
             seamless user experience tailored to passionate readers who want to
             stay organized and connected in the world of literature.{" "}
           </p>
-          <Link className="btn btn-primary mt-2" href="/library">
-            Find books
-          </Link>
+          {user ? (
+            <Link className="btn btn-primary mt-2" href="/library">
+              Find books
+            </Link>
+          ) : (
+            <Link className="btn btn-primary mt-2" href="/api/auth/login">
+              Login
+            </Link>
+          )}
           <button></button>
         </div>
       </div>

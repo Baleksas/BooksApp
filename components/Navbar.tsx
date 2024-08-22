@@ -1,3 +1,4 @@
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -6,6 +7,10 @@ import { usePathname } from "next/navigation";
 import React from "react";
 
 const Navbar = () => {
+  const { user, error, isLoading } = useUser();
+  // server component
+  // const { user } = await getSession();
+
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -22,36 +27,45 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-end">
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <Image
-                width={40}
-                height={40}
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-              />
-            </div>
+        {!user && (
+          <div>
+            <Link className="btn btn-outline" href="/api/auth/login">
+              Login
+            </Link>
           </div>
+        )}
+        <div className="dropdown dropdown-end">
+          {user && (
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              {/* login func */}
+              <div className="w-10 rounded-full">
+                <Image
+                  width={40}
+                  height={40}
+                  alt={user.name as string}
+                  src={user.picture as string}
+                />
+              </div>
+            </div>
+          )}
           <ul
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <a className="justify-between">
+              <Link href="/profile" className="justify-between">
                 Profile
-                <span className="badge">New</span>
-              </a>
+              </Link>
             </li>
             <li>
               <a>Settings</a>
             </li>
             <li>
-              <a>Logout</a>
+              <Link href="/api/auth/logout">Logout</Link>
             </li>
           </ul>
         </div>

@@ -1,18 +1,16 @@
 "use client";
-import { BookAPI, BookDB } from "@/types/Book";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast/headless";
-import Loading from "../shared/Loading";
 import {
   createReview,
   getBooksInCollection,
   removeBookFromCollection,
 } from "@/app/actions";
-import { ToastBar } from "react-hot-toast";
+import { BookDB } from "@/types/Book";
+import { Review } from "@/types/Review";
+import Image from "next/image";
+import { useState } from "react";
+import toast from "react-hot-toast/headless";
 import BookSkeleton from "../library/BookSkeleton";
 import Modal from "../shared/Modal";
-import { Review, ReviewDB } from "@/types/Review";
 
 interface CollectionBookProps {
   bookData: BookDB;
@@ -35,7 +33,6 @@ export default function CollectionBook({
       success: "Book removed from collection",
       error: "Error removing book",
     });
-    // get books here
     const books = await getBooksInCollection(selectedCollectionId);
 
     toast.promise(response, {
