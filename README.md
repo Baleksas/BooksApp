@@ -6,13 +6,13 @@ Inspired by good reads
 
 ## Features
 
-[X]Browse through a collection of books
-[ ]Read book summaries and details
-[ ]Leave reviews and ratings for books
-[X]Search for specific books by title
-[X]Create a personal reading list
-[ ]Connect with other users and see their reviews
-[ ]Talk to the author - ChatGPT integration using streaming
+- [X]Browse through a collection of books
+- [ ]Read book summaries and details
+- [X]Leave reviews and ratings for books
+- [X]Search for specific books by title
+- [X]Create a personal reading list
+- [ ]Connect with other users and see their reviews
+- [ ]Talk to the author - ChatGPT integration using streaming
 
 ## Technical concepts utilized
 
