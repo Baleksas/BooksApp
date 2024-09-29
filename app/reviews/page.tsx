@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useEffect, useState } from "react";
 import ReviewCard from "@/components/reviews/ReviewCard";
-import { getReviews } from "../actions";
+import { getAllReviews } from "../actions";
 import { Review, ReviewDB } from "@/types/Review";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 
@@ -17,19 +17,15 @@ const ReviewContext = createContext<ReviewContextType>({
 
 const Page = () => {
   const [reviews, setReviews] = useState<ReviewDB[]>([]);
-  const { user, error, isLoading } = useUser();
 
   const getData = async () => {
-    const response = await getReviews();
+    const response = await getAllReviews();
     setReviews(response as ReviewDB[]);
   };
 
   useEffect(() => {
     getData();
   }, []);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
 
   return (
     <div className="w-full">

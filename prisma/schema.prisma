@@ -8,13 +8,6 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model User {
-  id          String       @id @default(uuid())
-  name        String
-  reviews     Review[]
-  collections Collection[]
-}
-
 model Book {
   //id will come from the api - no default
   id          String       @id
@@ -30,7 +23,6 @@ model Collection {
   id        String @id @default(uuid())
   title     String
   books     Book[]
-  creator   User   @relation(fields: [creatorId], references: [id])
   creatorId String
 }
 
@@ -40,6 +32,5 @@ model Review {
   rating    Int
   book      Book   @relation(fields: [bookId], references: [id])
   bookId    String
-  creator   User   @relation(fields: [creatorId], references: [id])
   creatorId String
 }

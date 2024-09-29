@@ -5,6 +5,7 @@ import { BookAPI, BookDB } from "@/types/Book";
 import { Collection } from "@/types/Collection";
 import { Review, ReviewDB } from "@/types/Review";
 import { redirect } from "next/navigation";
+import { getSession } from "@auth0/nextjs-auth0";
 
 // External API
 export const getBooksByTitle = async (
@@ -43,18 +44,17 @@ export const getBookByKey = async (key: string) => {
 };
 
 // Collections
-export const addCollection = async (
-  prevState: State,
-  formData: FormData,
-  userId: string
-) => {
+export const addCollection = async (prevState: State, formData: FormData) => {
   const title = formData.get("title");
+
   if (!title) {
     return {
       resetKey: Date.now(),
       error: "Title is required",
     };
   }
+  const session = await getSession();
+  const user = session?.user;
 
   const collectionExists = await prisma.collection.findFirst({
     where: {
@@ -62,6 +62,7 @@ export const addCollection = async (
         equals: title as string,
         mode: "insensitive",
       },
+      creatorId: user?.sid as any,
     },
   });
 
@@ -75,7 +76,7 @@ export const addCollection = async (
   const newCollection = await prisma.collection.create({
     data: {
       title: title as string,
-      creatorId: userId,
+      creatorId: user?.sid as any,
     },
   });
 
@@ -123,9 +124,13 @@ export const getCollectionById = async (collectionId: string) => {
     };
   }
 
+  const session = await getSession();
+  const user = session?.user;
+
   const collection = await prisma.collection.findUnique({
     where: {
       id: collectionId,
+      creatorId: user?.sid as any,
     },
     include: {
       books: true,
@@ -161,7 +166,6 @@ export const addBookToCollection = async (
       book.volumeInfo.imageLinks?.smallThumbnail ||
       "",
   };
-
   const bookInCollectionExists = !!(await prisma.collection.findFirst({
     where: {
       id: collectionId,
@@ -192,6 +196,9 @@ export const addBookToCollection = async (
       error: "Book could not be added to the books table",
     };
   }
+  //FIXME: use type for the user and make sure sid property is most relevant
+  const session = await getSession();
+  const user = session?.user;
 
   try {
     await prisma.collection.update({
@@ -199,6 +206,7 @@ export const addBookToCollection = async (
         id: collectionId,
       },
       data: {
+        creatorId: user?.sid as any,
         books: {
           connect: {
             id: bookData.id,
@@ -290,9 +298,14 @@ export const removeBookFromCollection = async (
 };
 
 export const getBooksInCollection = async (collectionId: string) => {
+  // TODO: Use this instead of passing user id from the client
+  const session = await getSession();
+  const user = session?.user;
+
   const collection = await prisma.collection.findUnique({
     where: {
       id: collectionId,
+      creatorId: user?.sid as any,
     },
     include: {
       books: true,
@@ -308,10 +321,19 @@ export const getBooksInCollection = async (collectionId: string) => {
 };
 
 export const getAllCollections = async () => {
-  //TODO: implement error handling
+  const session = await getSession();
+  const user = session?.user;
+
   const allCollections = await prisma.collection.findMany({
     include: {
-      books: true,
+      books: {
+        include: {
+          reviews: true,
+        },
+      },
+    },
+    where: {
+      creatorId: user?.sid as any,
     },
   });
 
@@ -319,11 +341,17 @@ export const getAllCollections = async () => {
 };
 
 export const getCollectionsDictionary = async () => {
+  const session = await getSession();
+  const user = session?.user;
+
   //TODO: implement error handling
   const collectionsDictionary = await prisma.collection.findMany({
     select: {
       id: true,
       title: true,
+    },
+    where: {
+      creatorId: user?.sid as any,
     },
   });
 
@@ -365,18 +393,22 @@ export const createReview = async (
       creatorId: review.creatorId,
     },
   });
-  console.log("reviewExists", reviewExists);
+
   if (reviewExists) {
     return {
       error: "You already have a review for this book",
     };
   }
+
+  const session = await getSession();
+  const user = session?.user;
+
   await prisma.review.create({
     data: {
       comment: review.comment,
       rating: review.rating,
       bookId: bookData.id,
-      creatorId: review.creatorId,
+      creatorId: user?.sid as any,
     },
   });
 
@@ -387,6 +419,7 @@ export const editReview = async (review: Review) => {
   const reviewExists = await prisma.review.findUnique({
     where: {
       id: review.id,
+      creatorId: review.creatorId,
     },
   });
 
@@ -396,6 +429,9 @@ export const editReview = async (review: Review) => {
     };
   }
 
+  const session = await getSession();
+  const user = session?.user;
+
   const updatedReview = await prisma.review.update({
     where: {
       id: review.id,
@@ -403,6 +439,7 @@ export const editReview = async (review: Review) => {
     data: {
       comment: review.comment,
       rating: review.rating,
+      creatorId: user?.sid as any,
     },
     include: {
       book: true,
@@ -442,8 +479,15 @@ export const deleteReview = async (reviewId: string) => {
   };
 };
 
-export const getReviews = async () => {
+export const getAllReviews = async () => {
+  const session = await getSession();
+  const user = session?.user;
+
   return prisma.review.findMany({
+    where: {
+      creatorId: user?.sid as any,
+    },
+
     include: {
       book: true,
     },

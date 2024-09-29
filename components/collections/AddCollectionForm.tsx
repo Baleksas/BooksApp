@@ -8,29 +8,21 @@ import { useFormState } from "react-dom";
 import toast from "react-hot-toast/headless";
 
 export const AddCollectionForm = () => {
-  const userId = "123";
-
   const context = useContext(CollectionContext);
 
   const { collections, setCollections } = context;
 
-  const addCollectionWithUserId = async (
-    prevState: State,
-    formData: FormData
-  ) => {
-    const updatedState = await addCollection(prevState, formData, userId);
+  const addCollectionFc = async (prevState: State, formData: FormData) => {
+    const updatedState = await addCollection(prevState, formData);
     // should this be here?
-    setCollections([...collections!, updatedState.data as any]);
+    // setCollections([...collections!, updatedState.data as any]);
     return updatedState;
   };
 
-  const [state, action] = useFormState<State, FormData>(
-    addCollectionWithUserId,
-    {
-      error: null,
-      resetKey: null,
-    }
-  );
+  const [state, action] = useFormState<State, FormData>(addCollection, {
+    error: null,
+    resetKey: null,
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
