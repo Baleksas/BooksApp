@@ -2,45 +2,52 @@ import {
   addBookToCollection,
   createReview,
   getAllCollections,
+  getAllReviews,
 } from "@/app/actions";
 import { BookAPI } from "@/types/Book";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast/headless";
 import Loading from "../shared/Loading";
 import Dropdown from "../shared/Dropdown";
 import { Collection } from "@/types/Collection";
 import { useFormStatus } from "react-dom";
-import { Review } from "@/types/Review";
+import { Review, ReviewDB } from "@/types/Review";
 import Modal from "../shared/Modal";
 
 interface BookCardProps {
   bookData: BookAPI;
   collectionOptions: Option[];
+  reviews: Review[];
 }
 
 export default function BookCard({
   bookData,
   collectionOptions,
+  reviews,
 }: BookCardProps) {
-  const addBookToCollectionFc = async (
-    bookData: BookAPI,
-    collectionId: string
-  ) => {
-    const response = await addBookToCollection(bookData, collectionId);
-
-    if (response?.error) {
-      toast.error(response.error);
-    } else toast.success(`${bookData.volumeInfo.title} added to collection`);
-  };
+  const [reviewForBookExists, setReviewForBookExists] = useState(false);
 
   const startReview = async (bookId: string) => {
     const modalElement = document.getElementById(bookId) as HTMLDialogElement;
     modalElement.showModal();
   };
 
+  const checkIfReviewForBookExists = async () => {
+    console.log(reviews.some((review) => review.bookId === bookData.id));
+    console.log(reviews);
+    return reviews.some((review) => review.bookId === bookData.id);
+  };
+
+  useEffect(() => {
+    const checkReviewExists = async () => {
+      const exists = await checkIfReviewForBookExists();
+      setReviewForBookExists(exists);
+    };
+    checkReviewExists();
+  }, [bookData.id]);
+
   const onCreateReview = async (review: Review) => {
-    console.log(bookData.id, review);
     const response = await createReview(bookData, review);
     if (response?.error) {
       toast.error(response.error);
@@ -52,7 +59,7 @@ export default function BookCard({
   };
 
   return (
-    <>
+    <React.Fragment>
       <Modal
         action={(review: Review) => onCreateReview(review)}
         dialogId={bookData.id}
@@ -79,32 +86,30 @@ export default function BookCard({
           {bookData.volumeInfo?.authors?.[0] && (
             <p>{bookData.volumeInfo.authors[0]}</p>
           )}
-          <div className="card-actions justify-end">
-            <button
-              onClick={() => startReview(bookData.id)}
-              className="btn btn-outline text-pink-400"
-            >
-              {/* TODO: hide this button if review exists for this book */}
-              Review
-            </button>
-            <button
-              onClick={() => addBookToCollectionFc(bookData, "dawdaw2")}
-              type="submit"
-              className="btn btn-outline text-green-600"
-            >
-              Mark as read
-            </button>
+          <div className="card-actions justify-end items-center">
+            {!reviewForBookExists ? (
+              <button
+                onClick={() => startReview(bookData.id)}
+                className="btn btn-outline text-pink-400"
+              >
+                Review
+              </button>
+            ) : (
+              <div className="badge badge-success gap-2">Reviewed</div>
+            )}
+
             <Dropdown
               title="Add to collection"
               options={collectionOptions}
               book={bookData}
             ></Dropdown>
-            <button type="button" className="btn btn-outline">
+            {/* Future concept - integration of AI model */}
+            {/* <button type="button" className="btn btn-outline">
               Talk to the author
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 }

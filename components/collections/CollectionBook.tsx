@@ -7,7 +7,7 @@ import {
 import { BookDB } from "@/types/Book";
 import { Review } from "@/types/Review";
 import Image from "next/image";
-import { useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast/headless";
 import BookSkeleton from "../library/BookSkeleton";
 import Modal from "../shared/Modal";
@@ -59,7 +59,7 @@ export default function CollectionBook({
   };
 
   return (
-    <>
+    <React.Fragment>
       <Modal
         action={(review: Review) => onCreateReview(review)}
         dialogId={bookData.id}
@@ -100,11 +100,14 @@ export default function CollectionBook({
               >
                 Remove from collection
               </button>
-              <button className="btn btn-outline">Talk to the author</button>
+              {/* Future concept - integration of AI model */}
+              {/* <button type="button" className="btn btn-outline">
+              Talk to the author
+            </button> */}
             </div>
           </div>
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 }

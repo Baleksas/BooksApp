@@ -2,17 +2,21 @@
 import { BookSearchResponse } from "@/types/BookSearchResponse";
 import BookCard from "./BookCard";
 import { BookAPI } from "@/types/Book";
-import { useEffect, useState } from "react";
-import { getAllCollections } from "@/app/actions";
+import React, { useEffect, useState } from "react";
+import { getAllCollections, getAllReviews } from "@/app/actions";
 import { Collection } from "@prisma/client";
+import { Review } from "@/types/Review";
 
 export default function SearchResults({
   searchResults,
+  reviews,
 }: {
   searchResults: BookSearchResponse;
+  reviews: Review[];
 }) {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [collectionOptions, setCollectionOptions] = useState<Option[]>([]);
+
   const getCollections = async () => {
     const allCollections = await getAllCollections();
     setCollections(allCollections);
@@ -31,14 +35,7 @@ export default function SearchResults({
   }, [collections]);
 
   return (
-    <>
-      {searchResults ? (
-        <div className="text-xl mt-2">
-          {searchResults && (
-            <div>Results found: {searchResults.totalItems}</div>
-          )}
-        </div>
-      ) : null}
+    <React.Fragment>
       <div className="mt-3 ">
         {searchResults ? (
           searchResults.items.map((book: BookAPI) => (
@@ -46,12 +43,13 @@ export default function SearchResults({
               collectionOptions={collectionOptions}
               key={book.id}
               bookData={book}
-            ></BookCard>
+              reviews={reviews}
+            />
           ))
         ) : (
           <p>No results yet</p>
         )}
       </div>
-    </>
+    </React.Fragment>
   );
 }

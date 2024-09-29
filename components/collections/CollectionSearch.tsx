@@ -64,16 +64,10 @@ const CollectionSearch = () => {
           </div>
         )}
       </div>
-      {selectedCollection ? (
-        <CollectionContent
-          setSelectedCollection={setSelectedCollection}
-          selectedCollection={selectedCollection}
-        />
-      ) : (
-        <div className="text-xl mt-5">
-          No collections found. Start by creating a collection
-        </div>
-      )}
+      <CollectionContent
+        setSelectedCollection={setSelectedCollection}
+        selectedCollection={selectedCollection}
+      />
     </>
   );
 };

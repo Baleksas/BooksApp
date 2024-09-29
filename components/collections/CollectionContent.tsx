@@ -62,35 +62,35 @@ export const CollectionContent = ({
     // Update the selected collection state
     setSelectedCollection(updatedCollection);
   };
-  return selectedCollection ? (
-    <div className="mt-3">
-      <div className="flex flex-col gap-3">
-        <h2 className="text-xl font-bold">{selectedCollection?.title}</h2>
-        <div className="flex gap-3">
-          <button
-            className="btn btn-outline text-red-500"
-            onClick={() => deleteReadingList(selectedCollection.id)}
-          >
-            Delete collection
-          </button>
-        </div>
-      </div>
-
-      {selectedCollection.books?.length > 0 ? (
-        selectedCollection.books.map((book: BookDB) => (
-          <div key={book.id}>
-            <CollectionBook
-              bookData={book}
-              selectedCollectionId={selectedCollection.id}
-              setCollectionBooks={setCollectionBooks}
-            />
+  return (
+    selectedCollection && (
+      <div className="mt-3">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-xl font-bold">{selectedCollection?.title}</h2>
+          <div className="flex gap-3">
+            <button
+              className="btn btn-outline text-red-500"
+              onClick={() => deleteReadingList(selectedCollection.id)}
+            >
+              Delete collection
+            </button>
           </div>
-        ))
-      ) : (
-        <div className="mt-5 text-xl">No books in the collection</div>
-      )}
-    </div>
-  ) : (
-    <div className="mt-5 text-xl">No collections found</div>
+        </div>
+
+        {selectedCollection.books?.length > 0 ? (
+          selectedCollection.books.map((book: BookDB) => (
+            <div key={book.id}>
+              <CollectionBook
+                bookData={book}
+                selectedCollectionId={selectedCollection.id}
+                setCollectionBooks={setCollectionBooks}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="mt-5 text-xl">No books in the collection</div>
+        )}
+      </div>
+    )
   );
 };

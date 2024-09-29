@@ -1,6 +1,7 @@
-import { Book } from "./Book";
+import { BookAPI } from "./Book";
+import { Review } from "./Review";
 
 export interface BookSearchResponse {
   totalItems: number;
-  items: Book[];
+  items: BookAPI[];
 }
