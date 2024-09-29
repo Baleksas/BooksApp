@@ -1,5 +1,5 @@
 "use client";
-import { deleteReview, editReview, getReviews } from "@/app/actions";
+import { deleteReview, editReview, getAllReviews } from "@/app/actions";
 import { Review, ReviewDB } from "@/types/Review";
 import React, { useContext } from "react";
 import toast from "react-hot-toast/headless";
@@ -14,8 +14,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
 
   const { reviews, setReviews } = context;
 
-  const getAllReviews = async () => {
-    const allReviews = await getReviews();
+  const getReviews = async () => {
+    const allReviews = await getAllReviews();
     setReviews(allReviews as ReviewDB[]);
   };
 
@@ -33,7 +33,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
         `Review for book "${response.data?.book.title}" edited sucessfully`
       );
 
-    getAllReviews();
+    getReviews();
   };
 
   const deleteReviewFc = async (reviewId: string) => {
@@ -59,8 +59,22 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
           <img src={review.book.imageLink} alt="Movie" />
         </figure>
         <div className="card-body">
-          <h2 className="card-title">Rating: {review.rating}</h2>
-          <p>Comment: {review.comment}</p>
+          <h2 className="card-title">
+            Rating:
+            <div className="rating">
+              {[...Array(review.rating)].map((_, index) => (
+                <input
+                  key={index}
+                  type="radio"
+                  name="rating"
+                  className="mask mask-star"
+                  value={index + 1}
+                  readOnly
+                />
+              ))}
+            </div>
+          </h2>
+          <p>{review.comment}</p>
           <div className="card-actions justify-end">
             <button
               className="btn btn-secondary"

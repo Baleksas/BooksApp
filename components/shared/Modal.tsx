@@ -86,14 +86,24 @@ const Modal = ({
                 <div className="label">
                   <span className="label-text">Rating</span>
                 </div>
-                <input
-                  value={review.rating || 0}
-                  type="number"
-                  onChange={(e) =>
-                    setReview({ ...review, rating: parseInt(e.target.value) })
-                  }
-                  className="input input-bordered"
-                />
+                <div className="rating">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <input
+                      key={rating}
+                      type="radio"
+                      name="rating"
+                      className="mask mask-star"
+                      value={rating}
+                      onChange={(e) =>
+                        setReview({
+                          ...review,
+                          rating: parseInt(e.target.value),
+                        })
+                      }
+                      defaultChecked={review.rating === rating}
+                    />
+                  ))}
+                </div>
               </label>
             </div>
             <div className="modal-action">
