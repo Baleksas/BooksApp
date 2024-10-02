@@ -199,6 +199,7 @@ export const addBookToCollection = async (
   //FIXME: use type for the user and make sure sid property is most relevant
   const session = await getSession();
   const user = session?.user;
+  console.log(user);
 
   try {
     await prisma.collection.update({

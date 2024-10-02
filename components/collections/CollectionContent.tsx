@@ -10,15 +10,18 @@ import {
 import toast from "react-hot-toast/headless";
 import { useContext, useEffect, useState } from "react";
 import { CollectionContext } from "@/app/collections/page";
+import { Review } from "@/types/Review";
 
 interface SelectedCollectionProps {
   selectedCollection: Collection | undefined;
   setSelectedCollection: (collection: Collection | undefined) => void;
+  reviews: Review[];
 }
 
 export const CollectionContent = ({
   setSelectedCollection,
   selectedCollection,
+  reviews,
 }: SelectedCollectionProps) => {
   const context = useContext(CollectionContext);
 
@@ -58,7 +61,6 @@ export const CollectionContent = ({
           )
         : [updatedCollection]
     );
-
     // Update the selected collection state
     setSelectedCollection(updatedCollection);
   };
@@ -84,6 +86,7 @@ export const CollectionContent = ({
                 bookData={book}
                 selectedCollectionId={selectedCollection.id}
                 setCollectionBooks={setCollectionBooks}
+                reviews={reviews}
               />
             </div>
           ))

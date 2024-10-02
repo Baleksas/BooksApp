@@ -7,7 +7,7 @@ import {
 import { BookDB } from "@/types/Book";
 import { Review } from "@/types/Review";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast/headless";
 import BookSkeleton from "../library/BookSkeleton";
 import Modal from "../shared/Modal";
@@ -16,14 +16,17 @@ interface CollectionBookProps {
   bookData: BookDB;
   selectedCollectionId: string;
   setCollectionBooks: (books: BookDB[]) => void;
+  reviews: Review[];
 }
 
 export default function CollectionBook({
   bookData,
   selectedCollectionId,
   setCollectionBooks,
+  reviews,
 }: CollectionBookProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [reviewForBookExists, setReviewForBookExists] = useState(false);
 
   const removeBook = async (bookId: string, collectionId: string) => {
     const response = removeBookFromCollection(bookId, collectionId);
@@ -58,6 +61,20 @@ export default function CollectionBook({
     }
   };
 
+  const checkIfReviewForBookExists = async () => {
+    console.log(reviews.some((review) => review.bookId === bookData.id));
+    console.log(reviews);
+    return reviews.some((review) => review.bookId === bookData.id);
+  };
+
+  useEffect(() => {
+    const checkReviewExists = async () => {
+      const exists = await checkIfReviewForBookExists();
+      setReviewForBookExists(exists);
+    };
+    checkReviewExists();
+  }, [bookData.id]);
+
   return (
     <React.Fragment>
       <Modal
@@ -86,20 +103,24 @@ export default function CollectionBook({
           <div className="card-body">
             <h2 className="card-title">{bookData.title}</h2>
             <h2>{bookData.authorName}</h2>
-            <div className="card-actions justify-end">
-              <button
-                className="btn btn-outline text-pink-400"
-                onClick={() => startReview(bookData.id)}
-              >
-                {/* TODO: hide this button if review exists for this book */}
-                Review
-              </button>
+            <div className="card-actions justify-end items-center">
+              {!reviewForBookExists ? (
+                <button
+                  onClick={() => startReview(bookData.id)}
+                  className="btn btn-outline text-pink-400"
+                >
+                  Review
+                </button>
+              ) : (
+                <div className="badge badge-success gap-2">Reviewed</div>
+              )}
               <button
                 onClick={() => removeBook(bookData.id, selectedCollectionId)}
                 className="btn btn-outline text-red-500"
               >
                 Remove from collection
               </button>
+
               {/* Future concept - integration of AI model */}
               {/* <button type="button" className="btn btn-outline">
               Talk to the author

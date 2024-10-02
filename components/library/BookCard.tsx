@@ -34,8 +34,6 @@ export default function BookCard({
   };
 
   const checkIfReviewForBookExists = async () => {
-    console.log(reviews.some((review) => review.bookId === bookData.id));
-    console.log(reviews);
     return reviews.some((review) => review.bookId === bookData.id);
   };
 

@@ -1,12 +1,17 @@
 "use client";
 import { AddCollectionForm } from "./AddCollectionForm";
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { CollectionContent } from "./CollectionContent";
 import toast from "react-hot-toast/headless";
 import { Collection } from "@/types/Collection";
-import { getBooksInCollection, getCollectionById } from "@/app/actions";
+import {
+  getAllReviews,
+  getBooksInCollection,
+  getCollectionById,
+} from "@/app/actions";
 import { BookDB } from "@/types/Book";
 import { CollectionContext } from "@/app/collections/page";
+import { Review } from "@/types/Review";
 
 const CollectionSearch = () => {
   const [selectedCollection, setSelectedCollection] = useState<
@@ -14,7 +19,8 @@ const CollectionSearch = () => {
   >(undefined);
 
   const context = useContext(CollectionContext);
-
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
   const { collections } = context;
 
   const changeSelectedCollection = (collectionId: string) => {
@@ -25,6 +31,17 @@ const CollectionSearch = () => {
   };
 
   const prevLengthRef = useRef<number>(0);
+
+  useEffect(() => {
+    setIsLoadingReviews(true);
+    const fetchReviews = async () => {
+      const fetchedReviews = await getAllReviews();
+      setReviews(fetchedReviews);
+      setIsLoadingReviews(false);
+    };
+
+    fetchReviews().then(() => setIsLoadingReviews(false));
+  }, []);
 
   useEffect(() => {
     const currentLength = collections?.length || 0;
@@ -45,7 +62,7 @@ const CollectionSearch = () => {
   }, [collections?.length]);
 
   return (
-    <>
+    <React.Fragment>
       <div className="flex flex-col sm:flex-row gap-3">
         <AddCollectionForm />
         {selectedCollection && collections && collections.length > 1 && (
@@ -67,8 +84,9 @@ const CollectionSearch = () => {
       <CollectionContent
         setSelectedCollection={setSelectedCollection}
         selectedCollection={selectedCollection}
+        reviews={reviews}
       />
-    </>
+    </React.Fragment>
   );
 };
 export default CollectionSearch;
