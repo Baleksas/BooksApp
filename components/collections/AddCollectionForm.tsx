@@ -1,6 +1,6 @@
 "use client";
 import { addCollection, getAllCollections } from "@/app/actions";
-import { CollectionContext } from "@/app/collections/page";
+import { CollectionContext } from "@/lib/context/CollectionContext";
 import { Collection } from "@/types/Collection";
 import State, { DataState } from "@/types/FormState";
 import { useContext } from "react";

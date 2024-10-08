@@ -5,8 +5,8 @@ import { BookDB } from "@/types/Book";
 import { deleteCollection, getAllCollections } from "@/app/actions";
 import toast from "react-hot-toast/headless";
 import { useContext, useEffect, useState } from "react";
-import { CollectionContext } from "@/app/collections/page";
 import { Review } from "@/types/Review";
+import { CollectionContext } from "@/lib/context/CollectionContext";
 
 interface SelectedCollectionProps {
   selectedCollection: Collection | undefined;

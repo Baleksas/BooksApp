@@ -10,8 +10,8 @@ import {
   getCollectionById,
 } from "@/app/actions";
 import { BookDB } from "@/types/Book";
-import { CollectionContext } from "@/app/collections/page";
 import { Review } from "@/types/Review";
+import { CollectionContext } from "@/lib/context/CollectionContext";
 
 const CollectionSearch = () => {
   const [selectedCollection, setSelectedCollection] = useState<
