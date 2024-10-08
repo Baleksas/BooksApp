@@ -4,16 +4,7 @@ import ReviewCard from "@/components/reviews/ReviewCard";
 import { getAllReviews } from "../actions";
 import { Review, ReviewDB } from "@/types/Review";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
-
-interface ReviewContextType {
-  reviews: ReviewDB[];
-  setReviews: React.Dispatch<React.SetStateAction<ReviewDB[]>>;
-}
-
-const ReviewContext = createContext<ReviewContextType>({
-  reviews: [],
-  setReviews: () => {},
-});
+import { ReviewContext } from "@/lib/context/ReviewContext";
 
 const Page = () => {
   const [reviews, setReviews] = useState<ReviewDB[]>([]);
@@ -43,4 +34,3 @@ const Page = () => {
 };
 
 export default withPageAuthRequired(Page);
-export { ReviewContext };

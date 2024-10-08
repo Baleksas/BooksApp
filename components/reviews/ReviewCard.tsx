@@ -4,7 +4,7 @@ import { Review, ReviewDB } from "@/types/Review";
 import React, { useContext } from "react";
 import toast from "react-hot-toast/headless";
 import Modal from "../shared/Modal";
-import { ReviewContext } from "@/app/reviews/page";
+import { ReviewContext } from "@/lib/context/ReviewContext";
 
 interface ReviewCardProps {
   review: ReviewDB;
