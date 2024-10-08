@@ -1,19 +1,10 @@
 "use client";
 import CollectionSearch from "@/components/collections/CollectionSearch";
 import { Collection } from "@/types/Collection";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getAllCollections } from "../actions";
-import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
-
-interface CollectionContextType {
-  collections: Collection[];
-  setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
-}
-
-const CollectionContext = createContext<CollectionContextType>({
-  collections: [],
-  setCollections: () => {},
-});
+import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
+import { CollectionContext } from "@/lib/context/CollectionContext";
 
 const Page = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -36,5 +27,4 @@ const Page = () => {
   );
 };
 
-export { CollectionContext };
 export default withPageAuthRequired(Page);

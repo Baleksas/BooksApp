@@ -2,11 +2,7 @@
 import { Collection } from "@/types/Collection";
 import CollectionBook from "./CollectionBook";
 import { BookDB } from "@/types/Book";
-import {
-  deleteCollection,
-  getAllCollections,
-  getCollectionsDictionary,
-} from "@/app/actions";
+import { deleteCollection, getAllCollections } from "@/app/actions";
 import toast from "react-hot-toast/headless";
 import { useContext, useEffect, useState } from "react";
 import { CollectionContext } from "@/app/collections/page";
