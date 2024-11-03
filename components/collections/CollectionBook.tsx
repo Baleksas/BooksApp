@@ -10,7 +10,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast/headless";
 import BookSkeleton from "../library/BookSkeleton";
-import Modal from "../shared/Modal";
+import ReviewModal from "../shared/ReviewModal";
 
 interface CollectionBookProps {
   bookData: BookDB;
@@ -77,7 +77,7 @@ export default function CollectionBook({
 
   return (
     <React.Fragment>
-      <Modal
+      <ReviewModal
         action={(review: Review) => onCreateReview(review)}
         dialogId={bookData.id}
       />

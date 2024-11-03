@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import Notifications from "@/components/shared/Notifications";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-
-const inter = Inter({ subsets: ["latin"] });
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Read Away",
@@ -23,10 +21,11 @@ export default function RootLayout({
     <html lang="en">
       <UserProvider>
         <body>
-          <main>
+          <main className=" min-h-screen">
             <Notifications />
             <Sidebar>{children}</Sidebar>
           </main>
+          <Footer />
         </body>
       </UserProvider>
     </html>

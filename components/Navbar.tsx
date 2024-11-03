@@ -8,16 +8,12 @@ import React from "react";
 
 const Navbar = () => {
   const { user, error, isLoading } = useUser();
-  // server component
-  // const { user } = await getSession();
-
+  const pathname = usePathname();
+  if (pathname === "/") return null;
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
-        <label
-          htmlFor="sidebar-toggle"
-          className="btn  drawer-button lg:hidden"
-        >
+        <label htmlFor="sidebar-toggle" className="btn drawer-button lg:hidden">
           <FontAwesomeIcon icon={faBars} />{" "}
         </label>
       </div>

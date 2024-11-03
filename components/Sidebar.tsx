@@ -5,11 +5,7 @@ import React from "react";
 import Navbar from "./Navbar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
-const Sidebar = ({
-  children, // will be a page or nested layout
-}: {
-  children: React.ReactNode;
-}) => {
+const Sidebar = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const { user, error, isLoading } = useUser();
   const hideSidebar = () => {
@@ -20,7 +16,13 @@ const Sidebar = ({
       sidebar.checked = false;
     }
   };
-
+  if (pathname === "/")
+    return (
+      <>
+        <Navbar />
+        {children}
+      </>
+    );
   return (
     <div className="drawer lg:drawer-open ">
       <input id="sidebar-toggle" type="checkbox" className="drawer-toggle" />

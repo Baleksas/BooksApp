@@ -13,7 +13,7 @@ import Dropdown from "../shared/Dropdown";
 import { Collection } from "@/types/Collection";
 import { useFormStatus } from "react-dom";
 import { Review, ReviewDB } from "@/types/Review";
-import Modal from "../shared/Modal";
+import ReviewModal from "../shared/ReviewModal";
 
 interface BookCardProps {
   bookData: BookAPI;
@@ -58,14 +58,14 @@ export default function BookCard({
 
   return (
     <React.Fragment>
-      <Modal
+      <ReviewModal
         action={(review: Review) => onCreateReview(review)}
         dialogId={bookData.id}
       />
 
       <div className="card card-side bg-base-100 shadow-xl my-4 px-4 ">
         {bookData.volumeInfo?.imageLinks?.thumbnail && (
-          // FIXME: fix images sizing
+          // FIXME: fix images sizing for mobile
           <figure>
             <Image
               width={200}

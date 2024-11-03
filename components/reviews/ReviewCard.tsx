@@ -3,9 +3,10 @@ import { deleteReview, editReview, getPersonalReviews } from "@/app/actions";
 import { Review, ReviewDB } from "@/types/Review";
 import React, { useContext } from "react";
 import toast from "react-hot-toast/headless";
-import Modal from "../shared/Modal";
+import ReviewModal from "../shared/ReviewModal";
 import { ReviewContext } from "@/lib/context/ReviewContext";
 import Link from "next/link";
+import { Rating } from "../shared/Rating";
 
 interface ReviewCardProps {
   review: ReviewDB;
@@ -40,7 +41,6 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   const deleteReviewFc = async (reviewId: string) => {
     const response = await deleteReview(reviewId);
     if (response.error) {
-      toast.error(response.error);
     } else {
       toast.success(
         `Review for book "${response.data?.book.title}" deleted sucessfully`
@@ -50,7 +50,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   };
   return (
     <>
-      <Modal
+      <ReviewModal
         reviewData={review}
         dialogId={review.id}
         action={(editedReview) => editReviewFc(editedReview)}
@@ -62,18 +62,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
         <div className="card-body">
           <h2 className="card-title">
             Rating:
-            <div className="rating">
-              {[...Array(review.rating)].map((_, index) => (
-                <input
-                  key={index}
-                  type="radio"
-                  name="rating"
-                  className="mask mask-star"
-                  value={index + 1}
-                  readOnly
-                />
-              ))}
-            </div>
+            <Rating rating={review.rating} readOnly />
           </h2>
           <p>{review.comment}</p>
           <div className="card-actions justify-end">
