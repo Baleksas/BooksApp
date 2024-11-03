@@ -28,6 +28,7 @@ export default function SearchInput({
     <>
       <label className="input input-bordered flex items-center gap-2">
         <input
+          autoComplete="on"
           name="title"
           value={searchOptions.title}
           onChange={handleTitleChange}

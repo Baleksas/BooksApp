@@ -1,10 +1,11 @@
 "use client";
-import { deleteReview, editReview, getAllReviews } from "@/app/actions";
+import { deleteReview, editReview, getPersonalReviews } from "@/app/actions";
 import { Review, ReviewDB } from "@/types/Review";
 import React, { useContext } from "react";
 import toast from "react-hot-toast/headless";
 import Modal from "../shared/Modal";
 import { ReviewContext } from "@/lib/context/ReviewContext";
+import Link from "next/link";
 
 interface ReviewCardProps {
   review: ReviewDB;
@@ -15,7 +16,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   const { reviews, setReviews } = context;
 
   const getReviews = async () => {
-    const allReviews = await getAllReviews();
+    const allReviews = await getPersonalReviews();
     setReviews(allReviews as ReviewDB[]);
   };
 
@@ -44,7 +45,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
       toast.success(
         `Review for book "${response.data?.book.title}" deleted sucessfully`
       );
-      getAllReviews();
+      getPersonalReviews();
     }
   };
   return (
@@ -76,6 +77,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
           </h2>
           <p>{review.comment}</p>
           <div className="card-actions justify-end">
+            <Link
+              className="btn btn-outline"
+              href={`/books/${review.book.id}/reviews`}
+            >
+              See all reviews
+            </Link>
             <button
               className="btn btn-secondary"
               onClick={() => startEditReview(review.id)}

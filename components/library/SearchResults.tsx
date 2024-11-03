@@ -3,7 +3,7 @@ import { BookSearchResponse } from "@/types/BookSearchResponse";
 import BookCard from "./BookCard";
 import { BookAPI } from "@/types/Book";
 import React, { useEffect, useState } from "react";
-import { getAllCollections, getAllReviews } from "@/app/actions";
+import { getAllCollections, getPersonalReviews } from "@/app/actions";
 import { Collection } from "@prisma/client";
 import { Review } from "@/types/Review";
 

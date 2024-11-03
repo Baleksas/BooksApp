@@ -5,7 +5,7 @@ import { BookSearchResponse } from "@/types/BookSearchResponse";
 import SearchInput from "../SearchInput";
 import Pagination from "../shared/Pagination";
 import Loading from "../shared/Loading";
-import { getAllReviews, getBooksByTitle } from "@/app/actions";
+import { getPersonalReviews, getBooksByTitle } from "@/app/actions";
 import { Review } from "@/types/Review";
 
 export default function BookSearch() {
@@ -31,7 +31,7 @@ export default function BookSearch() {
   useEffect(() => {
     setIsLoadingReviews(true);
     const fetchReviews = async () => {
-      const fetchedReviews = await getAllReviews();
+      const fetchedReviews = await getPersonalReviews();
       setReviews(fetchedReviews);
       setIsLoadingReviews(false);
     };
@@ -47,6 +47,8 @@ export default function BookSearch() {
       searchOptions.resultsPerPage,
       currentStartIndex
     );
+
+    console.log(response);
     setSearchResults(response);
   };
 

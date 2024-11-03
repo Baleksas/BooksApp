@@ -1,4 +1,5 @@
 import { Review } from "@/types/Review";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect, useRef, useState } from "react";
 
 interface ModalProps {
@@ -26,15 +27,16 @@ const Modal = ({
     id: "",
     rating: 0,
     comment: "",
-    creatorId: "123",
+    creatorId: "",
   });
+  const { user, error, isLoading } = useUser();
 
   useEffect(() => {
     setReview({
       id: reviewData?.id || "",
       rating: reviewData?.rating || 0,
       comment: reviewData?.comment || "",
-      creatorId: "123",
+      creatorId: user!.sub || "",
     });
   }, [reviewData]);
 

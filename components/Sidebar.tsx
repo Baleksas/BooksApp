@@ -70,7 +70,7 @@ const Sidebar = ({
                   className={` ${pathname === "/reviews" ? "active" : ""}`}
                   href="/reviews"
                 >
-                  Reviews
+                  Your Reviews
                 </Link>
               </li>
             </>

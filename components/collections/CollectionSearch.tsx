@@ -5,7 +5,7 @@ import { CollectionContent } from "./CollectionContent";
 import toast from "react-hot-toast/headless";
 import { Collection } from "@/types/Collection";
 import {
-  getAllReviews,
+  getPersonalReviews,
   getBooksInCollection,
   getCollectionById,
 } from "@/app/actions";
@@ -35,7 +35,7 @@ const CollectionSearch = () => {
   useEffect(() => {
     setIsLoadingReviews(true);
     const fetchReviews = async () => {
-      const fetchedReviews = await getAllReviews();
+      const fetchedReviews = await getPersonalReviews();
       setReviews(fetchedReviews);
       setIsLoadingReviews(false);
     };

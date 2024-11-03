@@ -2,7 +2,7 @@ import {
   addBookToCollection,
   createReview,
   getAllCollections,
-  getAllReviews,
+  getPersonalReviews,
 } from "@/app/actions";
 import { BookAPI } from "@/types/Book";
 import Image from "next/image";

@@ -7,7 +7,7 @@ import { Review, ReviewDB } from "@/types/Review";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";
 
-// External API
+// ---------- External API - GOOGLE BOOKS ----------
 export const getBooksByTitle = async (
   title: string,
   limit: number,
@@ -25,13 +25,12 @@ export const getBooksByTitle = async (
       },
     }
   );
-
   return await response.json();
 };
 
-export const getBookByKey = async (key: string) => {
+export const getBookByID = async (id: string) => {
   const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes/${key}
+    `https://www.googleapis.com/books/v1/volumes/${id}
   `,
     {
       next: {
@@ -43,7 +42,7 @@ export const getBookByKey = async (key: string) => {
   return await response.json();
 };
 
-// Collections
+// ---------- Collections ----------
 export const addCollection = async (prevState: State, formData: FormData) => {
   const title = formData.get("title");
 
@@ -56,20 +55,13 @@ export const addCollection = async (prevState: State, formData: FormData) => {
   const session = await getSession();
   const user = session?.user;
 
-  if (!user) {
-    return {
-      resetKey: Date.now(),
-      error: "User not found",
-    };
-  }
-
   const collectionExists = await prisma.collection.findFirst({
     where: {
       title: {
         equals: title as string,
         mode: "insensitive",
       },
-      creatorId: user.sub as any,
+      creatorId: user!.sub,
     },
   });
 
@@ -83,7 +75,7 @@ export const addCollection = async (prevState: State, formData: FormData) => {
   const newCollection = await prisma.collection.create({
     data: {
       title: title as string,
-      creatorId: user.sub as any,
+      creatorId: user!.sub,
     },
   });
 
@@ -134,16 +126,10 @@ export const getCollectionById = async (collectionId: string) => {
   const session = await getSession();
   const user = session?.user;
 
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
-
   const collection = await prisma.collection.findUnique({
     where: {
       id: collectionId,
-      creatorId: user.sub as any,
+      creatorId: user!.sub,
     },
     include: {
       books: true,
@@ -212,19 +198,13 @@ export const addBookToCollection = async (
   const session = await getSession();
   const user = session?.user;
 
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
-
   try {
     await prisma.collection.update({
       where: {
         id: collectionId,
       },
       data: {
-        creatorId: user.sub as any,
+        creatorId: user!.sub,
         books: {
           connect: {
             id: bookData.id,
@@ -319,16 +299,10 @@ export const getBooksInCollection = async (collectionId: string) => {
   const session = await getSession();
   const user = session?.user;
 
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
-
   const collection = await prisma.collection.findUnique({
     where: {
       id: collectionId,
-      creatorId: user.sub as any,
+      creatorId: user!.sub,
     },
     include: {
       books: true,
@@ -347,12 +321,6 @@ export const getAllCollections = async () => {
   const session = await getSession();
   const user = session?.user;
 
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
-
   const allCollections = await prisma.collection.findMany({
     include: {
       books: {
@@ -362,7 +330,7 @@ export const getAllCollections = async () => {
       },
     },
     where: {
-      creatorId: user.sub as any,
+      creatorId: user!.sub,
     },
   });
 
@@ -373,31 +341,34 @@ export const getCollectionsDictionary = async () => {
   const session = await getSession();
   const user = session?.user;
 
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
-
   const collectionsDictionary = await prisma.collection.findMany({
     select: {
       id: true,
       title: true,
     },
     where: {
-      creatorId: user.sub,
+      creatorId: user!.sub,
     },
   });
 
   return collectionsDictionary;
 };
 
-// Reviews
+// ---------- Reviews ----------
 
 export const createReview = async (
   bookData: BookDB | BookAPI,
   review: Review
 ) => {
+  const session = await getSession();
+  const user = session?.user;
+
+  if (!user) {
+    return {
+      error: "User not found - you need to log in to create a review",
+    };
+  }
+
   let bookExists = await prisma.book.findUnique({
     where: {
       id: bookData.id,
@@ -434,21 +405,13 @@ export const createReview = async (
     };
   }
 
-  const session = await getSession();
-  const user = session?.user;
-
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
-
   await prisma.review.create({
     data: {
       comment: review.comment,
       rating: review.rating,
       bookId: bookData.id,
       creatorId: user.sub,
+      creatorNickname: user.nickname,
     },
   });
 
@@ -462,6 +425,7 @@ export const editReview = async (review: Review) => {
       creatorId: review.creatorId,
     },
   });
+  console.log("review looking for: ", review);
 
   if (!reviewExists) {
     return {
@@ -523,23 +487,38 @@ export const deleteReview = async (reviewId: string) => {
   };
 };
 
-export const getAllReviews = async () => {
+export const getPersonalReviews = async () => {
   const session = await getSession();
   const user = session?.user;
 
-  if (!user) {
-    return {
-      error: "User not found",
-    };
-  }
-
   return prisma.review.findMany({
     where: {
-      creatorId: user.sub,
+      creatorId: user!.sub,
     },
 
     include: {
       book: true,
+    },
+  });
+};
+
+export const getAllReviewsOfChosenBook = async (chosenBookId: string) => {
+  return prisma.review.findMany({
+    where: {
+      bookId: chosenBookId,
+    },
+    include: {
+      book: true,
+    },
+  });
+};
+
+// ---------- Books DB ----------
+
+export const getBookFromDB = async (bookId: string) => {
+  return prisma.book.findUnique({
+    where: {
+      id: bookId,
     },
   });
 };

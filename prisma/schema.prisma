@@ -27,10 +27,11 @@ model Collection {
 }
 
 model Review {
-  id        String @id @default(uuid())
-  comment   String
-  rating    Int
-  book      Book   @relation(fields: [bookId], references: [id])
-  bookId    String
-  creatorId String
+  id              String @id @default(uuid())
+  comment         String
+  rating          Int
+  book            Book   @relation(fields: [bookId], references: [id])
+  bookId          String
+  creatorId       String
+  creatorNickname String
 }
