@@ -112,7 +112,9 @@ export default function CollectionBook({
                   Review
                 </button>
               ) : (
+                //TODO: Adjust styling
                 <div className="badge badge-success gap-2">Reviewed</div>
+                //TODO: Add see reviews button
               )}
               <button
                 onClick={() => removeBook(bookData.id, selectedCollectionId)}

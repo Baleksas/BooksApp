@@ -20,11 +20,15 @@ Inspired by goodreads
 - Server actions
 - Route handlers
 
-## Technologies used
+## Main Technologies
 
-- Next.js
-- DaisyUI
-- Prisma
+- **[Next.js](https://nextjs.org/)**: A React framework for server-side rendering and static site generation.
+- **[React](https://reactjs.org/)**: A JavaScript library for building user interfaces.
+- **[Prisma](https://www.prisma.io/)**: An ORM tool for database management.
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for styling.
+- **[DaisyUI](https://daisyui.com/)**: A plugin for Tailwind CSS that provides pre-designed components.
+- **[Auth0](https://auth0.com/)**: A platform for authentication and authorization.
+- **[TypeScript](https://www.typescriptlang.org/)**: A typed superset of JavaScript that compiles to plain JavaScript.
 
 ## Installation
 

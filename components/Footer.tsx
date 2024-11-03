@@ -3,7 +3,7 @@ import { FaInstagram, FaGithub, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="footer bg-neutral footer-center  text-neutral-content items-center p-4">
+    <footer className="footer bg-base-300 footer-center  text-neutral-content items-center p-4">
       <aside className="grid-flow-col items-center">
         <p>© {new Date().getFullYear()} - Licensed under the MIT License.</p>
       </aside>

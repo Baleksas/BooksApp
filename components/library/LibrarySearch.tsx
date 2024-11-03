@@ -60,9 +60,6 @@ export default function BookSearch() {
             searchOptions={searchOptions}
             setSearchOptions={setSearchOptions}
           />
-          <button type="submit" className="btn btn-outline">
-            Search
-          </button>
         </div>
       </form>
       {isLoadingReviews ? (

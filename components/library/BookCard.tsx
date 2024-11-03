@@ -93,9 +93,10 @@ export default function BookCard({
                 Review
               </button>
             ) : (
+              //TODO: Adjust styling
               <div className="badge badge-success gap-2">Reviewed</div>
+              //TODO: Add see reviews button
             )}
-
             <Dropdown
               title="Add to collection"
               options={collectionOptions}

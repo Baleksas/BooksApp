@@ -29,6 +29,7 @@ const Page = () => {
             ))}
           </>
         ) : (
+          // FIXME: This is displayed when reviews are loading
           <p>No reviews yet</p>
         )}
       </ReviewContext.Provider>
