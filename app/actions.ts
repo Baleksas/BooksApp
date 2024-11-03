@@ -56,13 +56,20 @@ export const addCollection = async (prevState: State, formData: FormData) => {
   const session = await getSession();
   const user = session?.user;
 
+  if (!user) {
+    return {
+      resetKey: Date.now(),
+      error: "User not found",
+    };
+  }
+
   const collectionExists = await prisma.collection.findFirst({
     where: {
       title: {
         equals: title as string,
         mode: "insensitive",
       },
-      creatorId: user?.sid as any,
+      creatorId: user.sub as any,
     },
   });
 
@@ -76,7 +83,7 @@ export const addCollection = async (prevState: State, formData: FormData) => {
   const newCollection = await prisma.collection.create({
     data: {
       title: title as string,
-      creatorId: user?.sid as any,
+      creatorId: user.sub as any,
     },
   });
 
@@ -127,10 +134,16 @@ export const getCollectionById = async (collectionId: string) => {
   const session = await getSession();
   const user = session?.user;
 
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
+
   const collection = await prisma.collection.findUnique({
     where: {
       id: collectionId,
-      creatorId: user?.sid as any,
+      creatorId: user.sub as any,
     },
     include: {
       books: true,
@@ -196,10 +209,14 @@ export const addBookToCollection = async (
       error: "Book could not be added to the books table",
     };
   }
-  //FIXME: use type for the user and make sure sid property is most relevant
   const session = await getSession();
   const user = session?.user;
-  console.log(user);
+
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
 
   try {
     await prisma.collection.update({
@@ -207,7 +224,7 @@ export const addBookToCollection = async (
         id: collectionId,
       },
       data: {
-        creatorId: user?.sid as any,
+        creatorId: user.sub as any,
         books: {
           connect: {
             id: bookData.id,
@@ -299,14 +316,19 @@ export const removeBookFromCollection = async (
 };
 
 export const getBooksInCollection = async (collectionId: string) => {
-  // TODO: Use this instead of passing user id from the client
   const session = await getSession();
   const user = session?.user;
+
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
 
   const collection = await prisma.collection.findUnique({
     where: {
       id: collectionId,
-      creatorId: user?.sid as any,
+      creatorId: user.sub as any,
     },
     include: {
       books: true,
@@ -325,6 +347,12 @@ export const getAllCollections = async () => {
   const session = await getSession();
   const user = session?.user;
 
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
+
   const allCollections = await prisma.collection.findMany({
     include: {
       books: {
@@ -334,7 +362,7 @@ export const getAllCollections = async () => {
       },
     },
     where: {
-      creatorId: user?.sid as any,
+      creatorId: user.sub as any,
     },
   });
 
@@ -345,14 +373,19 @@ export const getCollectionsDictionary = async () => {
   const session = await getSession();
   const user = session?.user;
 
-  //TODO: implement error handling
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
+
   const collectionsDictionary = await prisma.collection.findMany({
     select: {
       id: true,
       title: true,
     },
     where: {
-      creatorId: user?.sid as any,
+      creatorId: user.sub,
     },
   });
 
@@ -404,12 +437,18 @@ export const createReview = async (
   const session = await getSession();
   const user = session?.user;
 
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
+
   await prisma.review.create({
     data: {
       comment: review.comment,
       rating: review.rating,
       bookId: bookData.id,
-      creatorId: user?.sid as any,
+      creatorId: user.sub,
     },
   });
 
@@ -433,6 +472,12 @@ export const editReview = async (review: Review) => {
   const session = await getSession();
   const user = session?.user;
 
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
+
   const updatedReview = await prisma.review.update({
     where: {
       id: review.id,
@@ -440,7 +485,7 @@ export const editReview = async (review: Review) => {
     data: {
       comment: review.comment,
       rating: review.rating,
-      creatorId: user?.sid as any,
+      creatorId: user.sub,
     },
     include: {
       book: true,
@@ -452,8 +497,6 @@ export const editReview = async (review: Review) => {
   };
 };
 export const deleteReview = async (reviewId: string) => {
-  // check if review exists
-
   const reviewExists = await prisma.review.findUnique({
     where: {
       id: reviewId,
@@ -484,9 +527,15 @@ export const getAllReviews = async () => {
   const session = await getSession();
   const user = session?.user;
 
+  if (!user) {
+    return {
+      error: "User not found",
+    };
+  }
+
   return prisma.review.findMany({
     where: {
-      creatorId: user?.sid as any,
+      creatorId: user.sub,
     },
 
     include: {
