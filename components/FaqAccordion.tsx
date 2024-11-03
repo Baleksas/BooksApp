@@ -50,7 +50,6 @@ const FaqAccordion = () => {
           checked={activeIndex === 0}
           type="radio"
           name="faq-accordion"
-          defaultChecked
         />
         <div className="collapse-title text-xl font-medium">
           What is Read Away?
