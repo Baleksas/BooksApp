@@ -4,6 +4,8 @@ export default async function Profile() {
   "use server";
   const session = await getSession();
   const user = session?.user;
+
+  console.log(user);
   return (
     user && (
       <div>
