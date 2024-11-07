@@ -31,11 +31,11 @@ export const CollectionContent = ({
     } else {
       toast.success("Collection deleted");
 
-      getData();
+      getCollections();
     }
   };
 
-  const getData = async () => {
+  const getCollections = async () => {
     const response = await getAllCollections();
 
     setCollections(response as Collection[]);

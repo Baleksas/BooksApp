@@ -6,6 +6,7 @@ export interface Review {
   rating: number;
   bookId?: string;
   creatorId: string;
+  creatorNickname?: string;
 }
 export interface ReviewDB {
   id: string;
@@ -14,4 +15,5 @@ export interface ReviewDB {
   bookId: string;
   creatorId: string;
   book: BookDB;
+  creatorNickname: string;
 }

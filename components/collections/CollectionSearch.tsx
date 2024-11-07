@@ -2,14 +2,8 @@
 import { AddCollectionForm } from "./AddCollectionForm";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { CollectionContent } from "./CollectionContent";
-import toast from "react-hot-toast/headless";
 import { Collection } from "@/types/Collection";
-import {
-  getPersonalReviews,
-  getBooksInCollection,
-  getCollectionById,
-} from "@/app/actions";
-import { BookDB } from "@/types/Book";
+import { getPersonalReviews } from "@/app/actions";
 import { Review } from "@/types/Review";
 import { CollectionContext } from "@/lib/context/CollectionContext";
 

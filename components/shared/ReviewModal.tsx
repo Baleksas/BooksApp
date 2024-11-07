@@ -34,7 +34,7 @@ const Modal = ({
   useEffect(() => {
     setReview({
       id: reviewData?.id || "",
-      rating: reviewData?.rating || 0,
+      rating: reviewData?.rating || 5,
       comment: reviewData?.comment || "",
       creatorId: user!.sub || "",
     });
@@ -112,7 +112,6 @@ const Modal = ({
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  console.log("review passed", review);
                   action(review);
                 }}
               >

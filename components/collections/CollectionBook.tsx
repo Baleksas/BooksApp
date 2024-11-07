@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast/headless";
 import BookSkeleton from "../library/BookSkeleton";
 import ReviewModal from "../shared/ReviewModal";
+import Link from "next/link";
 
 interface CollectionBookProps {
   bookData: BookDB;
@@ -104,6 +105,12 @@ export default function CollectionBook({
             <h2 className="card-title">{bookData.title}</h2>
             <h2>{bookData.authorName}</h2>
             <div className="card-actions justify-end items-center">
+              <Link
+                className="btn btn-outline"
+                href={`/books/${bookData.id}/reviews`}
+              >
+                See all reviews
+              </Link>
               {!reviewForBookExists ? (
                 <button
                   onClick={() => startReview(bookData.id)}

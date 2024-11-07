@@ -14,6 +14,7 @@ import { Collection } from "@/types/Collection";
 import { useFormStatus } from "react-dom";
 import { Review, ReviewDB } from "@/types/Review";
 import ReviewModal from "../shared/ReviewModal";
+import Link from "next/link";
 
 interface BookCardProps {
   bookData: BookAPI;
@@ -85,6 +86,12 @@ export default function BookCard({
             <p>{bookData.volumeInfo.authors[0]}</p>
           )}
           <div className="card-actions justify-end items-center">
+            <Link
+              className="btn btn-outline"
+              href={`/books/${bookData.id}/reviews`}
+            >
+              See all reviews
+            </Link>
             {!reviewForBookExists ? (
               <button
                 onClick={() => startReview(bookData.id)}

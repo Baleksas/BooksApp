@@ -17,8 +17,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   const { reviews, setReviews } = context;
 
   const getReviews = async () => {
-    const allReviews = await getPersonalReviews();
-    setReviews(allReviews as ReviewDB[]);
+    const personalReviews = await getPersonalReviews();
+    setReviews(personalReviews as ReviewDB[]);
   };
 
   const startEditReview = async (reviewId: string) => {
@@ -41,11 +41,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   const deleteReviewFc = async (reviewId: string) => {
     const response = await deleteReview(reviewId);
     if (response.error) {
+      toast.error(response.error);
     } else {
       toast.success(
         `Review for book "${response.data?.book.title}" deleted sucessfully`
       );
-      getPersonalReviews();
+      getReviews();
     }
   };
   return (
@@ -64,7 +65,9 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
             Rating:
             <Rating rating={review.rating} readOnly />
           </h2>
-          <p>{review.comment}</p>
+          <p className="text-xl italic font-semibold text-gray-700 dark:text-gray-400">
+            " {review.comment} "
+          </p>
           <div className="card-actions justify-end">
             <Link
               className="btn btn-outline"

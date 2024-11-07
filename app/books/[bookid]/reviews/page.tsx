@@ -21,7 +21,7 @@ export default async function Page({
   return (
     <React.Fragment>
       <h1 className="text-2xl font-bold">Reviews of the book:</h1>
-      <div className="card card-side bg-base-100 shadow-xl my-4 px-4 ">
+      <div className="card card-side bg-base-300 shadow-xl my-4 px-4 min-w-full ">
         {bookData.imageLink && (
           <figure>
             <Image
@@ -33,29 +33,30 @@ export default async function Page({
             />
           </figure>
         )}
-        <div className="card-body">
+        <div className="card-body card-bordered">
           <h2 className="card-title">{bookData.title}</h2>
 
           {bookData?.authorName && <p>{bookData.authorName}</p>}
         </div>
       </div>
-      {reviews.map((review) => (
-        <div
-          key={review.id}
-          className="card card-side bg-base-100 shadow-xl my-4 px-4"
-        >
-          <div className="card-body">
-            <h2 className="card-title">{review.creatorNickname}</h2>
-            <h2 className="card-title">
-              Rating:
-              <div className="rating">
-                <Rating rating={review.rating} readOnly />
-              </div>
-            </h2>
-            <p>{review.comment}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+        {reviews.map((review) => (
+          <div key={review.id} className="card card-side bg-gray-800 shadow-xl">
+            <div className="card-body	">
+              <h2 className="card-title">By: {review.creatorNickname}</h2>
+              <h2 className="card-title">
+                Rating:
+                <div className="rating">
+                  <Rating rating={review.rating} readOnly />
+                </div>
+              </h2>
+              <p className="text-xl italic font-semibold text-gray-700 dark:text-gray-400">
+                " {review.comment} "
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </React.Fragment>
   );
 }
