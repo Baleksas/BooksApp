@@ -51,7 +51,7 @@ export default async function Page({
                 </div>
               </h2>
               <p className="text-xl italic font-semibold text-gray-700 dark:text-gray-400">
-                " {review.comment} "
+                &quot; {review.comment} &quot;
               </p>
             </div>
           </div>
