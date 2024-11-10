@@ -66,7 +66,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
             <Rating rating={review.rating} readOnly />
           </h2>
           <p className="text-xl italic font-semibold text-gray-700 dark:text-gray-400">
-            " {review.comment} "
+            &quot; {review.comment} &quot;
           </p>
           <div className="card-actions justify-end">
             <Link
