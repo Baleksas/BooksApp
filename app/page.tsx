@@ -34,7 +34,11 @@ export default function Page() {
             </Link>
           ) : (
             <>
-              <Link className="btn btn-primary mt-2" href="/api/auth/login">
+              <Link
+                prefetch={false}
+                className="btn btn-primary mt-2"
+                href="/api/auth/login"
+              >
                 Login
               </Link>
               <LinkWrapper
