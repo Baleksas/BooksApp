@@ -1,17 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  FaInstagram,
-  FaGithub,
-  FaLinkedin,
-  FaReact,
-  FaDatabase,
-  FaLock,
-  FaCode,
-  FaSearch,
-  FaList,
-  FaPen,
-  FaUsers,
-} from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaList, FaPen, FaSearch, FaUsers } from "react-icons/fa";
 import {
   SiAuth0,
   SiDaisyui,
@@ -19,7 +7,6 @@ import {
   SiPostgresql,
   SiPrisma,
   SiTypescript,
-  SiVercel,
 } from "react-icons/si";
 import FAQItem from "./home/FaqItem";
 

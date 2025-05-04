@@ -48,7 +48,6 @@ export default function BookSearch() {
       currentStartIndex
     );
 
-    console.log(response);
     setSearchResults(response);
   };
 

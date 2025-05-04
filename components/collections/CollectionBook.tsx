@@ -63,8 +63,6 @@ export default function CollectionBook({
   };
 
   const checkIfReviewForBookExists = async () => {
-    console.log(reviews.some((review) => review.bookId === bookData.id));
-    console.log(reviews);
     return reviews.some((review) => review.bookId === bookData.id);
   };
 
@@ -95,7 +93,6 @@ export default function CollectionBook({
                 alt={bookData.title}
                 src={bookData.imageLink}
                 onLoad={() => {
-                  console.log("image loaded, setting it to true");
                   setImageLoaded(true);
                 }}
               />

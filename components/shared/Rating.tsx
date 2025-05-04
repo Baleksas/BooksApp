@@ -4,7 +4,6 @@ interface RatingProps {
 }
 
 export const Rating = ({ rating, readOnly }: RatingProps) => {
-  console.log(readOnly);
   return (
     <div className="rating">
       {[...Array(rating)].map((_, index) => (

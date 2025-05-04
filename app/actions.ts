@@ -425,7 +425,6 @@ export const editReview = async (review: Review) => {
       creatorId: review.creatorId,
     },
   });
-  console.log("review looking for: ", review);
 
   if (!reviewExists) {
     return {

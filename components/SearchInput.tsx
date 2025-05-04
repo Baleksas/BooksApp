@@ -16,18 +16,10 @@ export default function SearchInput({
     }));
   };
 
-  // const handleResultsPerPageChange = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   setSearchOptions((prevState) => ({
-  //     ...prevState,
-  //     resultsPerPage: Number(event.target.value),
-  //   }));
-  // };
   return (
     <>
-      <div className="join">
-        <label className="input input-bordered flex items-center gap-2">
+      <div className="flex flex-col gap-2 md:join md:flex-row w-full">
+        <label className="input input-bordered flex items-center gap-2 w-full md:w-auto">
           <input
             autoComplete="on"
             name="title"
@@ -51,7 +43,7 @@ export default function SearchInput({
           </svg>
         </label>
 
-        <label className="form-control join-item">
+        <label className="form-control w-full md:w-auto">
           <select
             onChange={(e) =>
               setSearchOptions((prevState) => ({
@@ -59,10 +51,10 @@ export default function SearchInput({
                 resultsPerPage: Number(e.target.value),
               }))
             }
-            defaultValue={10}
-            className="select select-bordered join-item"
+            defaultValue=""
+            className="select select-bordered join-item w-full md:w-auto"
           >
-            <option value={10} disabled selected>
+            <option value="" disabled>
               Results per page
             </option>
             <option value={10}>10</option>
@@ -70,7 +62,11 @@ export default function SearchInput({
             <option value={20}>20</option>
           </select>
         </label>
-        <button type="submit" className="btn btn-outline join-item">
+
+        <button
+          type="submit"
+          className="btn btn-outline join-item w-full md:w-auto"
+        >
           Search
         </button>
       </div>
