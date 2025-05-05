@@ -57,9 +57,7 @@ const Navbar = () => {
                 Profile
               </Link>
             </li>
-            <li>
-              <a>Settings</a>
-            </li>
+
             <li>
               <Link href="/api/auth/logout">Logout</Link>
             </li>
