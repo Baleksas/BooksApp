@@ -12,6 +12,7 @@ import toast from "react-hot-toast/headless";
 import BookSkeleton from "../library/BookSkeleton";
 import ReviewModal from "../shared/ReviewModal";
 import Link from "next/link";
+import SuccessBadge from "../shared/Badges/SuccessBadge";
 
 interface CollectionBookProps {
   bookData: BookDB;
@@ -101,7 +102,7 @@ export default function CollectionBook({
           <div className="card-body">
             <h2 className="card-title">{bookData.title}</h2>
             <h2>{bookData.authorName}</h2>
-            <div className="card-actions justify-end items-center">
+            <div className="grid card-actions justify-end items-center md:flex">
               <Link
                 className="btn btn-outline"
                 href={`/books/${bookData.id}/reviews`}
@@ -116,8 +117,7 @@ export default function CollectionBook({
                   Review
                 </button>
               ) : (
-                //TODO: Adjust styling
-                <div className="badge badge-success gap-2">Reviewed</div>
+                <SuccessBadge>Reviewed</SuccessBadge>
                 //TODO: Add see reviews button
               )}
               <button

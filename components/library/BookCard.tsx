@@ -15,6 +15,7 @@ import { useFormStatus } from "react-dom";
 import { Review, ReviewDB } from "@/types/Review";
 import ReviewModal from "../shared/ReviewModal";
 import Link from "next/link";
+import SuccessBadge from "../shared/Badges/SuccessBadge";
 
 interface BookCardProps {
   bookData: BookAPI;
@@ -100,8 +101,7 @@ export default function BookCard({
                 Review
               </button>
             ) : (
-              //TODO: Adjust styling
-              <div className="badge badge-success gap-2">Reviewed</div>
+              <SuccessBadge>Reviewed</SuccessBadge>
               //TODO: Add see reviews button
             )}
             <Dropdown
