@@ -7,7 +7,7 @@ import ReviewModal from "../shared/ReviewModal";
 import { ReviewContext } from "@/lib/context/ReviewContext";
 import Link from "next/link";
 import { Rating } from "../shared/Rating";
-
+import Image from "next/image";
 interface ReviewCardProps {
   review: ReviewDB;
 }
@@ -58,7 +58,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
       />
       <div className="card card-side bg-base-300 shadow-xl my-4 px-4">
         <figure>
-          <img src={review.book.imageLink} alt="Movie" />
+          <Image
+            src={review.book.imageLink}
+            alt="Movie"
+            width={100}
+            height={100}
+          />
         </figure>
         <div className="card-body">
           <h2 className="card-title">
