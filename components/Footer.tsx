@@ -7,7 +7,7 @@ const Footer = () => {
       <aside className="grid-flow-col items-center">
         <p>© {new Date().getFullYear()} - Licensed under the MIT License.</p>
       </aside>
-      <nav className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+      <nav className="grid-flow-col gap-4 md:place-self-center">
         <a
           href="https://github.com/Baleksas"
           target="_blank"

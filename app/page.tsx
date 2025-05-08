@@ -12,41 +12,45 @@ export default function Page() {
       className="hero min-h-screen overflow-hidden bg-cover"
       style={{
         backgroundImage:
-          "url(https://i.postimg.cc/xTR1z3vv/Magical-Library-DALL-E-Nov-3.png)",
+          "url(https://images2.alphacoders.com/261/thumb-1920-26102.jpg)",
       }}
     >
-      <div className="hero-overlay bg-opacity-80"></div>
+      <div className="hero-overlay"></div>
 
       <div className="hero-content text-neutral-content text-center">
         <div className="max-w-md">
-          <h1 className="mb-5 text-4xl font-bold">
-            Introducing{" "}
-            <span className="bold text-purple-400 ">Read Away!</span>
-          </h1>
+          <div className="flex flex-col items-center mb-4">
+            <h2 className="text-xl">
+              {user ? `Welcome back, ${user.name} ` : "Introducing "}
+            </h2>
+            <h1 className="bold text-3xl text-purple-400 ">Read Away!</h1>
+          </div>
 
-          <FaqAccordion />
           {user ? (
-            <Link
-              className="btn btn-secondary mt-2 btn-outline"
-              href="/library"
-            >
-              Find books
-            </Link>
-          ) : (
             <>
               <Link
+                className="btn btn-secondary mt-2 btn-outline"
+                href="/library"
+              >
+                Enter the library
+              </Link>
+            </>
+          ) : (
+            <>
+              <FaqAccordion />
+              <Link
                 prefetch={false}
-                className="btn btn-primary mt-2"
+                className="btn btn-primary m-2"
                 href="/api/auth/login"
               >
                 Login
               </Link>
               <LinkWrapper
-                disabled={true}
-                className="btn btn-secondary mt-2 btn-outline"
-                href="/library"
+                pointerEvents="none"
+                className="btn btn-ghost m-2  cursor-not-allowed"
+                href="#the-void"
               >
-                Find books
+                Enter the library
               </LinkWrapper>
             </>
           )}

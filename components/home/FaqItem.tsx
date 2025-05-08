@@ -24,13 +24,13 @@ const FAQItem: React.FC<FAQItemProps> = ({
         name="faq-accordion"
       />
       <div
-        className={`collapse-title text-xl font-medium ${
+        className={`collapse-title text-xl font-medium p-4 ${
           activeIndex === index ? "bg-purple-600" : ""
         }`}
       >
         {title}
       </div>
-      <div className="collapse-content">
+      <div className="collapse-content bg-gray-800">
         <div className="mt-4">{children}</div>
       </div>
     </div>

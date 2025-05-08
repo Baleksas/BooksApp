@@ -18,7 +18,7 @@ export default function SearchInput({
 
   return (
     <>
-      <div className="flex flex-col gap-2 md:join md:flex-row w-full">
+      <div className="flex flex-col gap-2 md:gap-0 md:join md:flex-row w-full">
         <label className="input input-bordered flex items-center gap-2 w-full md:w-auto">
           <input
             autoComplete="on"
