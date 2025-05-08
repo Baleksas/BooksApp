@@ -18,12 +18,7 @@ export const getBooksByTitle = async (
   }
 
   const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${title}&startIndex=${page}&maxResults=${limit}`,
-    {
-      next: {
-        tags: ["library"],
-      },
-    }
+    `https://www.googleapis.com/books/v1/volumes?q=${title}&startIndex=${page}&maxResults=${limit}`
   );
   return await response.json();
 };
@@ -31,12 +26,7 @@ export const getBooksByTitle = async (
 export const getBookByID = async (id: string) => {
   const response = await fetch(
     `https://www.googleapis.com/books/v1/volumes/${id}
-  `,
-    {
-      next: {
-        tags: ["book"],
-      },
-    }
+  `
   );
 
   return await response.json();
