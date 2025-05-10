@@ -65,28 +65,30 @@ export default function BookCard({
         dialogId={bookData.id}
       />
 
-      <div className="card card-side bg-base-100 shadow-xl my-4 px-4 ">
+      <div className="card md:card-side bg-base-100 shadow-xl my-4 flex flex-col md:flex-row items-center">
         {bookData.volumeInfo?.imageLinks?.thumbnail && (
-          // FIXME: fix images sizing for mobile
-          <figure>
+          <figure className="relative w-[200px] h-[300px] min-w-[200px]">
             <Image
-              width={200}
-              height={400}
+              fill
+              sizes="200px"
               quality={100}
               alt={bookData.volumeInfo.title}
               src={bookData.volumeInfo.imageLinks.thumbnail}
+              className="object-cover"
             />
           </figure>
         )}
-        <div className="card-body">
-          <h2 className="card-title">{bookData.volumeInfo.title}</h2>
+        <div className="card-body p-6">
+          <h2 className="card-title text-xl">{bookData.volumeInfo.title}</h2>
           {bookData.volumeInfo.subtitle && (
-            <h3>{bookData.volumeInfo.subtitle}</h3>
+            <h3 className="text-lg text-gray-400">
+              {bookData.volumeInfo.subtitle}
+            </h3>
           )}
           {bookData.volumeInfo?.authors?.[0] && (
-            <p>{bookData.volumeInfo.authors[0]}</p>
+            <p className="text-gray-500">{bookData.volumeInfo.authors[0]}</p>
           )}
-          <div className="card-actions justify-end items-center">
+          <div className="card-actions md:justify-end items-center mt-4">
             <Link
               className="btn btn-outline"
               href={`/books/${bookData.id}/reviews`}
@@ -102,7 +104,6 @@ export default function BookCard({
               </button>
             ) : (
               <SuccessBadge>Reviewed</SuccessBadge>
-              //TODO: Add see reviews button
             )}
             <Dropdown
               title="Add to collection"

@@ -51,15 +51,12 @@ export default function SearchInput({
                 resultsPerPage: Number(e.target.value),
               }))
             }
-            defaultValue=""
+            value={searchOptions.resultsPerPage}
             className="select select-bordered join-item w-full md:w-auto"
           >
-            <option value="" disabled>
-              Results per page
-            </option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-            <option value={20}>20</option>
+            <option value={10}>10 per page</option>
+            <option value={15}>15 per page</option>
+            <option value={20}>20 per page</option>
           </select>
         </label>
 
