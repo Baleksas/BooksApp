@@ -1,26 +1,41 @@
 "use client";
-import SearchResults from "./SearchResults";
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { BookSearchResponse } from "@/types/BookSearchResponse";
-import SearchInput from "../SearchInput";
-import Pagination from "../shared/Pagination";
-import Loading from "../shared/Loading";
-import { getPersonalReviews, getBooksByTitle } from "@/app/actions";
+import { getBooksByTitle, getPersonalReviews } from "@/app/actions";
+import { useLibrary } from "@/lib/context/LibraryContext";
 import { Review } from "@/types/Review";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast/headless";
+import SearchInput from "../SearchInput";
+import Loading from "../shared/Loading";
+import Pagination from "../shared/Pagination";
+import SearchResults from "./SearchResults";
 
-export default function BookSearch() {
+export default function LibrarySearch() {
+  const {
+    searchResults,
+    setSearchResults,
+    currentSearchTitle,
+    setCurrentSearchTitle,
+    currentStartIndex,
+    setCurrentStartIndex,
+    resultsPerPage,
+    setResultsPerPage,
+  } = useLibrary();
   const [searchOptions, setSearchOptions] = useState({
-    title: "",
-    resultsPerPage: 10,
+    title: currentSearchTitle,
+    resultsPerPage: resultsPerPage,
   });
-  const currentStartIndex = useRef(0);
-  const [searchResults, setSearchResults] =
-    useState<BookSearchResponse | null>();
   const initialRender = useRef(true);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(false);
-  const currentSearchTitle = useRef("");
+
+  // Update searchOptions when context values change
+  useEffect(() => {
+    setSearchOptions((prev) => ({
+      ...prev,
+      title: currentSearchTitle,
+      resultsPerPage: resultsPerPage,
+    }));
+  }, [currentSearchTitle, resultsPerPage]);
 
   const getSearchResults = useCallback(
     async (event?: React.FormEvent<HTMLFormElement>) => {
@@ -32,19 +47,41 @@ export default function BookSearch() {
           toast.error("Please enter a title");
           return;
         }
-        currentSearchTitle.current = searchOptions.title;
+        setCurrentSearchTitle(searchOptions.title);
+        setResultsPerPage(searchOptions.resultsPerPage);
+        // Use the new title for this search
+        const response = await getBooksByTitle(
+          searchOptions.title,
+          searchOptions.resultsPerPage,
+          currentStartIndex
+        );
+        setSearchResults(response);
+
+        // Fetch reviews only when we have search results
+        if (response?.items?.length) {
+          try {
+            setIsLoadingReviews(true);
+            const fetchedReviews = await getPersonalReviews();
+            setReviews(fetchedReviews);
+          } catch (error) {
+            console.error("Failed to fetch reviews:", error);
+          } finally {
+            setIsLoadingReviews(false);
+          }
+        }
+        return;
       }
 
-      // Don't search if we don't have a title
-      if (!currentSearchTitle.current) {
+      // For pagination, use the currentSearchTitle from context
+      if (!currentSearchTitle) {
         toast.error("Please enter a title");
         return;
       }
 
       const response = await getBooksByTitle(
-        currentSearchTitle.current,
-        searchOptions.resultsPerPage,
-        currentStartIndex.current
+        currentSearchTitle,
+        resultsPerPage,
+        currentStartIndex
       );
 
       setSearchResults(response);
@@ -62,17 +99,26 @@ export default function BookSearch() {
         }
       }
     },
-    [searchOptions.resultsPerPage, searchOptions.title]
+    [
+      searchOptions.resultsPerPage,
+      searchOptions.title,
+      currentSearchTitle,
+      currentStartIndex,
+      setSearchResults,
+      setCurrentSearchTitle,
+      setResultsPerPage,
+      resultsPerPage,
+    ]
   );
 
   const handlePageChange = useCallback(
     (page: number) => {
-      currentStartIndex.current = page;
-      if (searchResults && currentSearchTitle.current) {
+      setCurrentStartIndex(page);
+      if (searchResults && currentSearchTitle) {
         getSearchResults();
       }
     },
-    [getSearchResults, searchResults]
+    [getSearchResults, searchResults, currentSearchTitle, setCurrentStartIndex]
   );
 
   useEffect(() => {
@@ -99,8 +145,8 @@ export default function BookSearch() {
           <>
             <SearchResults searchResults={searchResults} reviews={reviews} />
             <Pagination
-              currentPage={currentStartIndex.current}
-              resultsPerPage={searchOptions.resultsPerPage}
+              currentPage={currentStartIndex}
+              resultsPerPage={resultsPerPage}
               setCurrentPage={handlePageChange}
             />
           </>
